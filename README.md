@@ -5,7 +5,7 @@
 
 ## 📌 Mục tiêu dự án
 
-CyberCAN Defense là một hệ thống mô phỏng và kiểm chứng các hình thức **tấn công mạng trên CAN bus** trong ô tô, đồng thời đề xuất giải pháp **phòng thủ hiệu quả** nhằm đảm bảo an toàn cho hệ thống điều khiển nội bộ xe hơi.
+CyberCAN Defense là một hệ thống mô phỏng và kiểm chứng các hình thức **tấn công mạng trên CAN bus** trong ô tô bằng Replay Attack, đồng thời đề xuất giải pháp **phòng thủ hiệu quả** nhằm đảm bảo an toàn cho hệ thống điều khiển nội bộ xe hơi.
 
 ---
 
