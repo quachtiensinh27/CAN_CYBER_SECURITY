@@ -1,5 +1,5 @@
 CREATE DATABASE id_des;
-USE id_des;
+USE id_des; 
 
 CREATE TABLE can (
     id INT AUTO_INCREMENT PRIMARY KEY,
