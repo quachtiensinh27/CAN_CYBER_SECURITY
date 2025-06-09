@@ -60,8 +60,8 @@ all: main-build
 main-build: CAN_UNPROTECTED_TRANSMISSION.elf secondary-outputs
 
 # Tool invocations
-CAN_UNPROTECTED_TRANSMISSION.elf CAN_UNPROTECTED_TRANSMISSION.map: $(OBJS) $(USER_OBJS) D:\CAN_UNPROTECTED_TRANSMISSION\STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "CAN_UNPROTECTED_TRANSMISSION.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"D:\CAN_UNPROTECTED_TRANSMISSION\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_UNPROTECTED_TRANSMISSION.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+CAN_UNPROTECTED_TRANSMISSION.elf CAN_UNPROTECTED_TRANSMISSION.map: $(OBJS) $(USER_OBJS) D:\CAN\CAN_CYBER_SECURITY\CAN_UNPROTECTED_TRANSMISSION\STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "CAN_UNPROTECTED_TRANSMISSION.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"D:\CAN\CAN_CYBER_SECURITY\CAN_UNPROTECTED_TRANSMISSION\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_UNPROTECTED_TRANSMISSION.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

@@ -45,15 +45,15 @@ volatile uint8_t repeat           = 0;
 int main(void)
 {
     /* ---- Peripheral initialization -------------------------------------- */
-    GPIO_Config();          /**< Configure GPIO pins                         */
-    UART_Config();          /**< Initialize UART1                            */
-    CAN_Config();           /**< Initialize CAN1                             */
-    Timer2_Config();        /**< Initialize Timer 2 for repeated CAN frames  */
+    GPIO_Config();          /*   Configure GPIO pins                         */
+    UART_Config();          /*   Initialize UART1                            */
+    CAN_Config();           /*   Initialize CAN1                             */
+    Timer2_Config();        /*   Initialize Timer 2 for repeated CAN frames  */
 
-    UART_Init_Buffers();    /**< Clear UART receive buffers                  */
-    repeat = 0;             /**< Disable repeat mode initially               */
+    UART_Init_Buffers();    /*   Clear UART receive buffers                  */
+    repeat = 0;             /*   Disable repeat mode initially               */
 
-    /* ---- Main loop ------------------------------------------------------- */
+    /* ---- Main loop ------------------------------------------------------ */
     while (1)
     {
         /* Handle a complete UART frame */
@@ -67,7 +67,7 @@ int main(void)
         if (can_frame_ready)
         {
             can_frame_ready = 0;
-            /* CAN frame already handled in USB_LP_CAN1_RX0_IRQHandler()    */
+            /* CAN frame already handled in USB_LP_CAN1_RX0_IRQHandler()     */
         }
     }
 }
