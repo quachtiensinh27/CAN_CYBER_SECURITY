@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>CAN Cybersecurity</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+    <h1>CAN Cybersecurity</h1>
+
+    <div id="attack-alert" title="CAN Attack Alert">
+        ⚠️ CẢNH BÁO: Hệ thống phát hiện dữ liệu bất thường hoặc tấn công CAN Bus!
+    </div>
+
+    <!-- Phần config và bảng như bạn đã có -->
+    <!-- ... (giữ nguyên phần form và bảng của bạn ở đây) -->
+
+    <div class="config-section">
+        <!-- UART Config -->
+        <div class="config-box">
+            <h2>UART Config</h2>
+            <form id="uart-form">
+                <label for="port">Port:</label>
+                <select name="port" id="port">
+                    {% for port in ports %}
+                        <option value="{{ port }}">{{ port }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="baudrate">Baudrate:</label>
+                <select name="baudrate" id="baudrate">
+                    {% for br in baudrates %}
+                        <option value="{{ br }}">{{ br }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Connect</button>
+            </form>
+            <div id="uart-status" style="width:20px; height:20px; border-radius:50%; background-color:red;" title="UART Status"></div>
+        </div>
+
+        <!-- CAN Config -->
+        <div class="config-box">
+            <h2>CAN Config</h2>
+            <form id="can-form">
+                <label for="can_id">CAN ID:</label>
+                <select name="can_id" id="can_id">
+                    {% for cid in can_ids %}
+                        <option value="{{ cid }}">{{ cid }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="data">Data:</label>
+                <input type="text" name="data" maxlength="256" required />
+
+                <label for="cyclic">Cyclic:</label>
+                <input type="number" name="cyclic" min="0" max="9999" required />
+
+                <button type="submit">Add</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tables Section -->
+    <div class="tables-section">
+        <!-- Transmit Table -->
+        <div class="table-box">
+            <h2>Transmit</h2>
+            <div class="scroll-box">
+                <table>
+                    <tr>
+                        <th>CAN ID</th><th>Model</th><th>Data</th><th>Description</th>
+                        <th>Direction</th><th>Cyclic</th><th>Send</th><th>Edit</th><th>Delete</th>
+                    </tr>
+                    {% for row in transmit_rows %}
+                    <tr>
+                        <td>{{ row[2] }}</td><td>{{ row[1] }}</td><td>{{ row[3] }}</td><td>{{ row[4] }}</td>
+                        <td>{{ row[5] }}</td><td>{{ row[6] }}</td>
+                        <td><button onclick="sendFrame('{{ row[0] }}')">Send</button></td>
+                        <td><button onclick="editFrame('{{ row[0] }}', '{{ row[3] }}', '{{ row[6] }}')">Edit</button></td>
+                        <td><button onclick="deleteFrame('{{ row[0] }}')">Delete</button></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+        <!-- Receive Table -->
+        <div class="table-box">
+            <h2>Receive</h2>
+            <div class="scroll-box">
+                <table>
+                    <tr>
+                        <th>Timestamp</th><th>CAN ID</th><th>Model</th><th>Data</th>
+                        <th>Description</th><th>Direction</th><th>Delete</th>
+                    </tr>
+                    {% for row in receive_rows %}
+                    <tr>
+                        <td>{{ row[1] }}</td><td>{{ row[3] }}</td><td>{{ row[2] }}</td><td>{{ row[4] }}</td>
+                        <td>{{ row[5] }}</td><td>{{ row[6] }}</td>
+                        <td><button onclick="deleteReceive('{{ row[0] }}')">Delete</button></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h3>Edit Frame</h3>
+            <form id="edit-form">
+                <input type="hidden" name="id" id="edit-id" />
+                <label for="edit-data">Data:</label>
+                <input type="text" name="data" id="edit-data" maxlength="256" />
+                <label for="edit-cyclic">Cyclic:</label>
+                <input type="number" name="cyclic" id="edit-cyclic" min="0" max="9999" />
+                <button type="submit">Update</button>
+                <button type="button" onclick="closeModal()">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // UART form submit
+        document.getElementById('uart-form').onsubmit = async function(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            await fetch('/connect_uart', { method: 'POST', body: formData });
+            alert('UART Connected!');
+        };
+
+        // CAN form submit
+        document.getElementById('can-form').onsubmit = async function(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            await fetch('/add_transmit', { method: 'POST', body: formData });
+            location.reload();
+        };
+
+        // Send, Delete, Edit functions
+        function sendFrame(id) {
+            fetch(`/send_frame/${id}`, { method: 'POST' }).then(() => alert('Frame Sent!'));
+        }
+
+        function deleteFrame(id) {
+            fetch(`/delete_transmit/${id}`, { method: 'POST' }).then(() => location.reload());
+        }
+
+        function deleteReceive(id) {
+            fetch(`/delete_receive/${id}`, { method: 'POST' }).then(() => location.reload());
+        }
+
+        function editFrame(id, data, cyclic) {
+            document.getElementById('edit-id').value = id;
+            document.getElementById('edit-data').value = data;
+            document.getElementById('edit-cyclic').value = cyclic;
+            document.getElementById('edit-modal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('edit-modal').style.display = 'none';
+        }
+
+        document.getElementById('edit-form').onsubmit = async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('edit-id').value;
+            const formData = new FormData(e.target);
+            await fetch(`/edit_transmit/${id}`, { method: 'POST', body: formData });
+            closeModal();
+            location.reload();
+        };
+
+        // UART status LED update
+        function updateUartStatus() {
+            fetch('/uart_status')
+                .then(response => response.json())
+                .then(data => {
+                    const led = document.getElementById("uart-status");
+                    if (data.connected) {
+                        led.style.backgroundColor = "green";
+                    } else {
+                        led.style.backgroundColor = "red";
+                    }
+                })
+                .catch(error => {
+                    console.error("UART status check failed:", error);
+                    document.getElementById("uart-status").style.backgroundColor = "red";
+                });
+        }
+        updateUartStatus();
+        setInterval(updateUartStatus, 2000);
+
+        // ==== Cảnh báo tấn công CAN Bus với flash ====
+
+        const attackAlert = document.getElementById("attack-alert");
+
+        function showAttackAlert() {
+            attackAlert.style.display = "block";
+            attackAlert.classList.add("flash-attack");
+        }
+
+        function hideAttackAlert() {
+            attackAlert.style.display = "none";
+            attackAlert.classList.remove("flash-attack");
+        }
+
+        // Kiểm tra tấn công định kỳ (ví dụ 3s một lần)
+        async function checkAttack() {
+            try {
+                const res = await fetch('/check_attack');
+                if (!res.ok) throw new Error("Network response was not OK");
+                const data = await res.json();
+                if (data.attack_detected) {
+                    showAttackAlert();
+                } else {
+                    hideAttackAlert();
+                }
+            } catch (error) {
+                console.error("Check attack failed:", error);
+                hideAttackAlert(); // ẩn khi lỗi
+            }
+        }
+
+        // Gọi lần đầu và lập lịch gọi lại mỗi 3 giây
+        checkAttack();
+        setInterval(checkAttack, 3000);
+
+    </script>
+</body>
+</html>
