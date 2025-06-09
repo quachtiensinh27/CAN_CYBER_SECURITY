@@ -3026,17 +3026,17 @@ LOAD D:/STM32CubeIDE_1.18.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.extern
  .debug_line    0x00003f60       0x78 ./Core/Startup/startup_stm32f103c8tx.o
  .debug_line    0x00003fd8      0x957 ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o
 
-.debug_str      0x00000000    0x7e880
- .debug_str     0x00000000    0x7e880 ./Core/Src/can.o
-                              0x7e502 (size before relaxing)
- .debug_str     0x0007e880    0x7dffd ./Core/Src/gpio.o
- .debug_str     0x0007e880    0x7e0c1 ./Core/Src/main.o
- .debug_str     0x0007e880    0x7e035 ./Core/Src/stm32f1xx_it.o
- .debug_str     0x0007e880    0x7ae26 ./Core/Src/system_stm32f1xx.o
- .debug_str     0x0007e880    0x7e457 ./Core/Src/timer.o
- .debug_str     0x0007e880    0x7e4d7 ./Core/Src/uart.o
- .debug_str     0x0007e880       0x98 ./Core/Startup/startup_stm32f103c8tx.o
- .debug_str     0x0007e880    0x7b559 ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o
+.debug_str      0x00000000    0x7e8bb
+ .debug_str     0x00000000    0x7e8bb ./Core/Src/can.o
+                              0x7e4e9 (size before relaxing)
+ .debug_str     0x0007e8bb    0x7dffd ./Core/Src/gpio.o
+ .debug_str     0x0007e8bb    0x7e0c1 ./Core/Src/main.o
+ .debug_str     0x0007e8bb    0x7e035 ./Core/Src/stm32f1xx_it.o
+ .debug_str     0x0007e8bb    0x7ae26 ./Core/Src/system_stm32f1xx.o
+ .debug_str     0x0007e8bb    0x7e43e ./Core/Src/timer.o
+ .debug_str     0x0007e8bb    0x7e4be ./Core/Src/uart.o
+ .debug_str     0x0007e8bb       0x98 ./Core/Startup/startup_stm32f103c8tx.o
+ .debug_str     0x0007e8bb    0x7b559 ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o
 
 .comment        0x00000000       0x43
  .comment       0x00000000       0x43 ./Core/Src/can.o
