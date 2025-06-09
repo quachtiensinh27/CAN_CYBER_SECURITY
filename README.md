@@ -77,26 +77,6 @@ CyberCAN Defense là một hệ thống mô phỏng và kiểm chứng các hìn
 - 🔎 Giao diện web giúp điều khiển & quan sát dễ dàng.
 
 ---
-
-## 📁 Cấu trúc thư mục
-
-CyberCAN-Defense/
-│
-├── images/ # Thư mục chứa hình ảnh minh họa (sử dụng trong README hoặc báo cáo)
-│
-├── CAN_Attack_Website/ # Giao diện web mô phỏng tấn công mạng CAN (Replay/Spam attack)
-│
-├── CAN_Basic_Website/ # Giao diện truyền nhận 2 chiều CAN cơ bản, chưa có bảo vệ
-│
-├── CAN_Protect_Website/ # Giao diện truyền nhận CAN có cơ chế phòng thủ và phát hiện tấn công
-│
-├── CAN_PROTECTED_TRANSMISSION/ # Code vi điều khiển (STM32 hoặc Arduino) có tích hợp bảo vệ
-│
-├── CAN_UNPROTECTED_TRANSMISSION/ # Code vi điều khiển không có cơ chế bảo vệ
-│
-└── README.md # Tài liệu mô tả dự án, hướng dẫn sử dụng và thông tin nhóm
-
----
 ## 👩‍💻 Nhóm thực hiện: 12
 
 - **Thành viên 1:** Quách Ngọc Quang – Kỹ thuật máy tính 
