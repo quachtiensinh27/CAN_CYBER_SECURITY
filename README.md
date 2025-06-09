@@ -15,7 +15,7 @@ CyberCAN Defense là một hệ thống mô phỏng và kiểm chứng các hìn
 - Thiết lập 2 node truyền/nhận dữ liệu qua giao thức CAN.
 - Chưa tích hợp cơ chế xác thực hay mã hóa.
   
-📷 Giao diện truyền nhận CAN chưa có bảo vệ*
+📷 Giao diện truyền nhận CAN chưa có bảo vệ
 
 <p align="center">
   <img src="images/TRXCAN.png" alt="CAN Interface" width="600"/>
@@ -35,10 +35,10 @@ CyberCAN Defense là một hệ thống mô phỏng và kiểm chứng các hìn
 - Sử dụng giao diện web trực quan để khởi tạo tấn công spam gói CAN.
 - Tạo gói dữ liệu giả lặp lại nhằm làm nhiễu hệ thống đích (replay).
   
-📷 Giao diện tấn công CAN*
+📷 Giao diện tấn công CAN
 
 <p align="center">
-  <img src="images/CANAttack.png" alt="CAN Attack UI" width="600"/>
+  <img src="images/CanAttack.png" alt="CAN Attack UI" width="600"/>
 </p>
 
 🔗 [\_Video minh họa tấn công\_](https://drive.google.com/file/d/1KyYhAsOvQhmhLoRIDh1QBbgJA2HXZJNm/view?usp=sharing)
@@ -49,6 +49,11 @@ CyberCAN Defense là một hệ thống mô phỏng và kiểm chứng các hìn
 
 - Sử dụng thuật toán phát hiện bất thường (ví dụ dựa trên ID, tần suất gói, checksum...).
 - Gửi cảnh báo qua UART khi phát hiện hành vi lặp bất thường.
+- 📷 Giao diện truyền nhận CAN có bảo vệ
+
+<p align="center">
+  <img src="images/RXCanProtect.png" alt="CAN Interface" width="600"/>
+</p>
 
 🔗 [\_Video mô phỏng cơ chế phòng thủ\_](https://drive.google.com/file/d/1eXdn-9znkbpUbPmOYnzGprltFy_cdC5y/view?usp=sharing)
 
@@ -57,17 +62,17 @@ CyberCAN Defense là một hệ thống mô phỏng và kiểm chứng các hìn
 ## 🧰 Công nghệ sử dụng
 
 - ⚙️ **CAN Protocol**
-- 👨‍💻 **Arduino Uno R3**
+- 👨‍💻 **STM32F103C8T6**
 - 📟 **MCP2551 CAN Transceiver**
-- 🌐 **WebSerial (HTML + JS)** cho giao diện điều khiển tấn công
-- 📡 **UART Log** để giám sát
+- 🌐 **WebSerial (HTML + JS + Flask Python)** cho giao diện truyền, nhận và  tấn công
+- 📡 **UART Log** để hiển thị
 
 ---
 
 ## 🧠 Tính năng nổi bật
 
 - ✅ Giao tiếp CAN song công mô phỏng thực tế.
-- 🛑 Mô phỏng các kỹ thuật tấn công phổ biến: Replay, Spam.
+- 🛑 Mô phỏng kỹ thuật tấn công phổ biến: Replay Attack.
 - 🛡️ Phát hiện và cảnh báo tấn công bất thường dựa trên thống kê.
 - 🔎 Giao diện web giúp điều khiển & quan sát dễ dàng.
 
@@ -78,26 +83,32 @@ CyberCAN Defense là một hệ thống mô phỏng và kiểm chứng các hìn
 CyberCAN-Defense/
 │
 ├── images/ # Chứa ảnh minh họa README
-├── firmware/ # Code Arduino
-├── web_interface/ # Web GUI để tấn công CAN
-├── defense_module/ # Mã phát hiện và cảnh báo
+├── CAN Attack Website/ # Website cho bên tấn công
+├── CAN Basic Website/ # Website truyền nhận 2 chiều CAN cơ bản
+├── CAN Protect Website/ # Website truyền nhận 2 chiều CAN có chế độ phòng thủ
+├── CAN_PROTECTED_TRANSMISSION/ # Code vi điều khiển có bảo vệ
+├── CAN_UNPROTECTED_TRANSMISSION/ # Code vi điều khiển không có bảo vệ
 └── README.md # Tài liệu mô tả dự án
 
-
 ---
+## 👩‍💻 Nhóm thực hiện: 12
 
-## 👩‍💻 Nhóm thực hiện
+- **Thành viên 1:** Quách Ngọc Quang – Kỹ thuật máy tính 
+- **Thành viên 2:** Nguyễn Tuấn Phong – Kỹ thuật máy tính 
+- **Thành viên 3:** Đoàn Đức Mạnh – Kỹ thuật máy tính
+- **Thành viên 4:** Nguyễn Minh Phúc – Kỹ thuật máy tính  
 
-- **Sinh viên:** [Tên bạn]
-- **Trường:** Đại học [Tên trường]
-- **Khoa:** Điện - Điện tử | Chuyên ngành: Hệ thống nhúng / An ninh mạng
+🎓 **Trường:** Đại học Công nghệ – ĐHQGHN (UET)  
+🏫 **Khoa:** Điện tử viễn thông  
+🛠️ **Môn học:** Cơ sở đo lường và điều khiển số
 
 ---
 
 ## 📬 Liên hệ
 
-📧 Email: yourname@uet.vnu.edu.vn  
-🔗 GitHub: [github.com/yourprofile](https://github.com/yourprofile)
+📧 Email nhóm: csdlteam3@gmail.com  
+🔗 GitHub: [[github.com/CyberCAN-Defense](https://github.com/CyberCAN-Defense)](https://github.com/JerryK4)
+
 
 ---
 
