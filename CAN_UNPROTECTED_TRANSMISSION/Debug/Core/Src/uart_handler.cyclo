@@ -1,0 +1,8 @@
+../Drivers/CMSIS/Include/core_cm3.h:1511:22:__NVIC_EnableIRQ	2
+../Core/Src/uart_handler.c:44:6:UART_Config	1
+../Core/Src/uart_handler.c:64:6:UART_Init_Buffers	1
+../Core/Src/uart_handler.c:77:6:UART_SendByte	2
+../Core/Src/uart_handler.c:90:6:UART_SendHex	1
+../Core/Src/uart_handler.c:107:6:UART_SendString	2
+../Core/Src/uart_handler.c:123:6:USART1_IRQHandler	12
+../Core/Src/uart_handler.c:170:6:Process_UART_Frame	5
