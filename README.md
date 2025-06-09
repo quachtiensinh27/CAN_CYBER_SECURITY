@@ -5,7 +5,7 @@
 
 ## 📌 Mục tiêu dự án
 
-CyberCAN Defense là một hệ thống mô phỏng và kiểm chứng các hình thức **tấn công mạng trên CAN bus** trong ô tô, đồng thời đề xuất các giải pháp **phòng thủ hiệu quả** nhằm đảm bảo an toàn cho hệ thống điều khiển nội bộ xe hơi.
+CyberCAN Defense là một hệ thống mô phỏng và kiểm chứng các hình thức **tấn công mạng trên CAN bus** trong ô tô, đồng thời đề xuất giải pháp **phòng thủ hiệu quả** nhằm đảm bảo an toàn cho hệ thống điều khiển nội bộ xe hơi.
 
 ---
 
@@ -15,7 +15,7 @@ CyberCAN Defense là một hệ thống mô phỏng và kiểm chứng các hìn
 - Thiết lập 2 node truyền/nhận dữ liệu qua giao thức CAN.
 - Chưa tích hợp cơ chế xác thực hay mã hóa.
   
-📷 *Minh họa: Giao diện truyền nhận CAN chưa có bảo vệ*
+📷 Giao diện truyền nhận CAN chưa có bảo vệ*
 
 <p align="center">
   <img src="images/TRXCAN.png" alt="CAN Interface" width="600"/>
@@ -35,10 +35,10 @@ CyberCAN Defense là một hệ thống mô phỏng và kiểm chứng các hìn
 - Sử dụng giao diện web trực quan để khởi tạo tấn công spam gói CAN.
 - Tạo gói dữ liệu giả lặp lại nhằm làm nhiễu hệ thống đích (replay).
   
-📷 *Minh họa: Giao diện tấn công CAN*
+📷 Giao diện tấn công CAN*
 
 <p align="center">
-  <img src="images/CAN_Attack_Interface.png" alt="CAN Attack UI" width="600"/>
+  <img src="images/CANAttack.png" alt="CAN Attack UI" width="600"/>
 </p>
 
 🔗 [\_Video minh họa tấn công\_](https://drive.google.com/file/d/1KyYhAsOvQhmhLoRIDh1QBbgJA2HXZJNm/view?usp=sharing)
