@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CAN Attack Web</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="{{ url_for('static', filename='image/user-secret-solid.svg') }}" type="image/svg+xml">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body class="text-white font-sans">
+  <div class="min-h-screen backdrop-blur-sm bg-black/60 p-8">
+    <div class="max-w-3xl mx-auto bg-white/10 p-6 rounded-2xl shadow-2xl">
+      <h1 class="text-3xl font-bold mb-4 text-blue-300">💠 CAN Attack Web Interface</h1>
+
+      <div class="mb-6">
+        <label class="block text-lg font-semibold mb-2">🔌 Select Port & Baud Rate:</label>
+        <div class="flex gap-4 flex-wrap items-center">
+          <select id="port" class="bg-gray-800 text-white px-4 py-2 rounded-lg">
+            {% for p in ports %}
+            <option value="{{ p }}">{{ p }}</option>
+            {% endfor %}
+          </select>
+
+          <select id="baudrate" class="bg-gray-800 text-white px-4 py-2 rounded-lg w-32">
+            <option value="9600">9600</option>
+            <option value="19200">19200</option>
+            <option value="38400">38400</option>
+            <option value="57600">57600</option>
+            <option value="115200" selected>115200</option>
+            <option value="230400">230400</option>
+          </select>
+
+          <button onclick="connect()" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg font-semibold">Connect</button>
+          <span id="status" class="ml-4 text-green-400 font-semibold"></span>
+        </div>
+      </div>
+
+      <div class="mb-6">
+        <label class="block text-lg font-semibold mb-2">📡 UART Log:</label>
+        <pre id="log" class="bg-black/80 text-green-300 p-4 rounded-lg h-40 overflow-y-auto font-mono"></pre>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-lg font-semibold mb-2">💣 Attack Controls:</label>
+        <div class="flex gap-4 flex-wrap items-center">
+          <button onclick="startSpam()" class="bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded-lg">🔁 Start Spam</button>
+          <button onclick="stopSpam()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg">🛑 Stop Spam</button>
+
+          <div class="flex items-center gap-2 bg-gray-800 text-white px-3 py-2 rounded-lg">
+            <label for="cycle" class="text-sm whitespace-nowrap">⏱️ Cycle (ms):</label>
+            <input id="cycle" type="number" value="500" min="0" class="bg-gray-700 text-white px-2 py-1 w-24 rounded-md">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let lastLog = "";
+    let interval;
+
+    async function connect() {
+      const port = document.getElementById('port').value;
+      const baudrate = document.getElementById('baudrate').value;
+      try {
+        const res = await fetch('/connect', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ port, baudrate })
+        });
+        const result = await res.json();
+        if (result.status === 'connected') {
+          document.getElementById('status').innerText = "✅ Connected";
+          document.getElementById('log').innerText = "";
+          if (interval) clearInterval(interval);
+          interval = setInterval(updateUART, 200);
+        } else {
+          alert("❌ Connection failed:\n" + result.message);
+          document.getElementById('status').innerText = "";
+          if (interval) clearInterval(interval);
+        }
+      } catch (e) {
+        alert("❌ Connection error: " + e.message);
+      }
+    }
+
+    async function updateUART() {
+      try {
+        const res = await fetch('/uart');
+        const result = await res.json();
+        if (result.log && result.log !== lastLog) {
+          const logElem = document.getElementById('log');
+          logElem.innerText += result.log + "\n";
+          logElem.scrollTop = logElem.scrollHeight;
+          lastLog = result.log;
+        }
+      } catch (e) {
+        console.error("Log fetch error:", e);
+      }
+    }
+
+    async function startSpam() {
+      const cycle = parseInt(document.getElementById('cycle').value) || 0;
+      try {
+        await fetch('/start_spam', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ cycle })
+        });
+      } catch (e) {
+        alert("❌ Start spam error: " + e.message);
+      }
+    }
+
+    async function stopSpam() {
+      try {
+        await fetch('/stop_spam', { method: 'POST' });
+      } catch (e) {
+        alert("❌ Stop spam error: " + e.message);
+      }
+    }
+  </script>
+</body>
+</html>
