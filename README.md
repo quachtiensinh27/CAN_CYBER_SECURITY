@@ -47,8 +47,8 @@ CyberCAN Defense là một hệ thống mô phỏng và kiểm chứng các hìn
 
 ### 4. Phòng thủ: Phát hiện hành vi bất thường
 
-- Sử dụng thuật toán phát hiện bất thường (ví dụ dựa trên ID, tần suất gói, checksum...).
-- Gửi cảnh báo qua UART khi phát hiện hành vi lặp bất thường.
+- Sử dụng thuật toán phát hiện bất thường.
+- Gửi cảnh báo khi phát hiện hành vi lặp bất thường.
 - 📷 Giao diện truyền nhận CAN có bảo vệ
 
 <p align="center">
