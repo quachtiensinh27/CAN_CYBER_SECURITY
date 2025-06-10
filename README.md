@@ -26,7 +26,7 @@ CyberCAN Defense là một hệ thống mô phỏng và kiểm chứng các hìn
 ### 2. Giao tiếp 2 chiều giữa các node
 - Hai chiều tương tác hoàn toàn qua CAN: node A gửi → node B nhận → phản hồi lại node A.
   
-🔗 [\_Xem video minh họa\_](https://drive.google.com/file/d/1pCK5nHrGLEExHY9vXCKYeSlwlsF2VMLN/view?usp=sharing)
+🔗 [\_Video truyền 2 chiều\_](https://drive.google.com/file/d/1pCK5nHrGLEExHY9vXCKYeSlwlsF2VMLN/view?usp=sharing)
 
 ---
 
