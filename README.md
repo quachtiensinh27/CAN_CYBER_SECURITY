@@ -26,7 +26,7 @@ CyberCAN Defense là một hệ thống mô phỏng và kiểm chứng các hìn
 ### 2. Giao tiếp 2 chiều giữa các node
 - Hai chiều tương tác hoàn toàn qua CAN: node A gửi → node B nhận → phản hồi lại node A.
   
-🔗 [\_Xem video minh họa\_](https://drive.google.com/file/d/1IhzmS7N2qZ4zpnPbRHyV2St-RuTUCvO9/view?usp=sharing)
+🔗 [\_Xem video minh họa\_](https://drive.google.com/file/d/1pCK5nHrGLEExHY9vXCKYeSlwlsF2VMLN/view?usp=sharing)
 
 ---
 
@@ -41,7 +41,7 @@ CyberCAN Defense là một hệ thống mô phỏng và kiểm chứng các hìn
   <img src="images/CanAttack.png" alt="CAN Attack UI" width="600"/>
 </p>
 
-🔗 [\_Video minh họa tấn công\_](https://drive.google.com/file/d/1KyYhAsOvQhmhLoRIDh1QBbgJA2HXZJNm/view?usp=sharing)
+🔗 [\_Video tấn công\_](https://drive.google.com/file/d/11zdeIVfv-vaAChAkVgTNAaR4zFdM-Rix/view?usp=sharing)
 
 ---
 
@@ -55,7 +55,7 @@ CyberCAN Defense là một hệ thống mô phỏng và kiểm chứng các hìn
   <img src="images/RXCanProtect.png" alt="CAN Interface" width="600"/>
 </p>
 
-🔗 [\_Video mô phỏng cơ chế phòng thủ\_](https://drive.google.com/file/d/1eXdn-9znkbpUbPmOYnzGprltFy_cdC5y/view?usp=sharing)
+🔗 [\_Video cơ chế phòng thủ\_](https://drive.google.com/file/d/18BFm1vB-RNR5hPCvwW3EDyKrHqGFu9gw/view?usp=sharing)
 
 ---
 
