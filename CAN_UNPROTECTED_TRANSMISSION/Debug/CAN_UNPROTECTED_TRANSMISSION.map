@@ -2545,14 +2545,14 @@ LOAD D:/STM32CubeIDE_1.18.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.extern
  .text.__NVIC_EnableIRQ
                 0x0800014c       0x38 ./Core/Src/can_handler.o
  .text.CAN_Config
-                0x08000184      0x110 ./Core/Src/can_handler.o
+                0x08000184      0x10c ./Core/Src/can_handler.o
                 0x08000184                CAN_Config
  .text.CAN_Send
-                0x08000294      0x134 ./Core/Src/can_handler.o
-                0x08000294                CAN_Send
+                0x08000290      0x13c ./Core/Src/can_handler.o
+                0x08000290                CAN_Send
  .text.USB_LP_CAN1_RX0_IRQHandler
-                0x080003c8       0xec ./Core/Src/can_handler.o
-                0x080003c8                USB_LP_CAN1_RX0_IRQHandler
+                0x080003cc       0xe8 ./Core/Src/can_handler.o
+                0x080003cc                USB_LP_CAN1_RX0_IRQHandler
  .text.Process_CAN_Frame
                 0x080004b4       0xa4 ./Core/Src/can_handler.o
                 0x080004b4                Process_CAN_Frame

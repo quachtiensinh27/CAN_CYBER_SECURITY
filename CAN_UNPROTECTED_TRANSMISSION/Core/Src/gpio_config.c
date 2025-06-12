@@ -25,20 +25,20 @@
  *****************************************************************************/
 void GPIO_Config(void) {
     // Enable clocks for GPIOA, GPIOC (optional), and AFIO
-    RCC->APB2ENR |= RCC_APB2ENR_IOPAEN | RCC_APB2ENR_IOPCEN | RCC_APB2ENR_AFIOEN;
+	RCC->APB2ENR |= (1 << 2) | (1 << 4) | (1 << 0);
 
     // Configure PA11 (CAN_RX) as input floating
     // Clear CNF11[1:0] and MODE11[1:0] bits
-    GPIOA->CRH &= ~(GPIO_CRH_CNF11 | GPIO_CRH_MODE11);
+	GPIOA->CRH &= ~((0b1111) << 12);
     // Set CNF11 to input floating (01), MODE11 to input (00)
-    GPIOA->CRH |= GPIO_CRH_CNF11_0;
+	GPIOA->CRH |= (0b01 << 14);
 
     // Configure PA12 (CAN_TX) as alternate function push-pull output
     // Clear CNF12[1:0] and MODE12[1:0] bits
-    GPIOA->CRH &= ~(GPIO_CRH_CNF12 | GPIO_CRH_MODE12);
+	GPIOA->CRH &= ~((0b1111) << 16);
     // Set MODE12 to output mode, max speed 2 MHz (10)
     // Set CNF12 to alternate function push-pull (10)
-    GPIOA->CRH |= GPIO_CRH_MODE12_1 | GPIO_CRH_CNF12_1;
+	GPIOA->CRH |= (0b10 << 16) | (0b10 << 18);
 }
 
 /*****************************************************************************

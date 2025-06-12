@@ -41,22 +41,24 @@ volatile uint8_t can_rx_buffer[CAN_BUFFER_SIZE]; // Buffer array for storing rec
  * @retval None
  */
 void CAN_Config(void) {
-    RCC->APB1ENR |= RCC_APB1ENR_CAN1EN;   // Enable clock for CAN1
+	RCC->APB1ENR |= (1 << 25);   // Enable clock for CAN1
 
-    CAN1->MCR |= CAN_MCR_INRQ;             // Request initialization mode
-    while (!(CAN1->MSR & CAN_MSR_INAK));  // Wait until CAN enters init mode (INAK flag set)
+	CAN1->MCR |= (1 << 0);            // Request initialization mode
+	while (!(CAN1->MSR & (1 << 0)));  // Wait until CAN enters init mode (INAK flag set)
 
-    CAN1->MCR &= ~(CAN_MCR_SLEEP | CAN_MCR_TTCM | CAN_MCR_AWUM | CAN_MCR_NART);
-    // Disable sleep mode, time-triggered communication, auto wake-up, and no automatic retransmission
+	CAN1->MCR &= ~((1 << 1)  // Bit 1: SLEEP
+				 | (1 << 7)  // Bit 7: TTCM
+				 | (1 << 6)  // Bit 6: AWUM
+				 | (1 << 4)); // Bit 4: NART
 
-    CAN1->MCR |= CAN_MCR_ABOM;             // Enable automatic bus-off management
+    CAN1->MCR |= (1 << 2);             // Enable automatic bus-off management
 
     CAN1->BTR = (0 << 24)                  // SJW = 1 (bits 24-25 = 00)
               | (1 << 16)                  // BS1 = 1 (bits 16-19)
               | (0 << 20)                  // BS2 = 0 (bits 20-22)
               | (3 << 0);                  // Prescaler = 4 (0-based: 3 means divide by 4)
 
-    CAN1->FMR |= CAN_FMR_FINIT;            // Enter filter init mode
+    CAN1->FMR |= (1 << 0);            // Enter filter init mode
     CAN1->FA1R &= ~(1 << 0);               // Deactivate filter 0
     CAN1->FS1R |= (1 << 0);                // Set filter 0 to 32-bit scale
     CAN1->FM1R &= ~(1 << 0);               // Set filter 0 to mask mode
@@ -64,18 +66,18 @@ void CAN_Config(void) {
     CAN1->sFilterRegister[0].FR2 = 0x00000000; // Set 32-bit mask = 0 (accept all)
     CAN1->FFA1R &= ~(1 << 0);              // Assign filter 0 to FIFO 0
     CAN1->FA1R |= (1 << 0);                // Activate filter 0
-    CAN1->FMR &= ~CAN_FMR_FINIT;           // Exit filter init mode
+    CAN1->FMR &= ~(1 << 0);           // Exit filter init mode
 
-    CAN1->IER |= CAN_IER_FMPIE0            // Enable FIFO0 message pending interrupt
-                 | CAN_IER_EWGIE            // Enable error warning interrupt
-                 | CAN_IER_EPVIE            // Enable error passive interrupt
-                 | CAN_IER_BOFIE;           // Enable bus-off interrupt
+    CAN1->IER |= (1 << 1)  // Bit 1: FMPIE0
+			  | (1 << 2)  // Bit 2: EWGIE
+			  | (1 << 3)  // Bit 3: EPVIE
+			  | (1 << 4); // Bit 4: BOFIE       // Enable bus-off interrupt
 
     NVIC_EnableIRQ(CAN1_RX0_IRQn);         // Enable CAN1 RX FIFO0 interrupt in NVIC
     NVIC_EnableIRQ(CAN1_TX_IRQn);          // Enable CAN1 TX interrupt in NVIC
 
-    CAN1->MCR &= ~CAN_MCR_INRQ;            // Exit initialization mode
-    while (CAN1->MSR & CAN_MSR_INAK);      // Wait until initialization mode cleared
+    CAN1->MCR &= ~(1 << 0);	            // Exit initialization mode
+    while (CAN1->MSR & (1 << 0));       // Wait until initialization mode cleared
 }
 
 /**
@@ -91,19 +93,19 @@ void CAN_Config(void) {
  * @retval None
  */
 void CAN_Send(uint8_t isExtended, uint32_t id, uint8_t *data, uint8_t len) {
-    if (CAN1->ESR & CAN_ESR_BOFF) {       // If bus is off, cannot send
+	if (CAN1->ESR & (1 << 2)) {       // If bus is off, cannot send
         return;                           // Exit function
     }
 
     uint32_t timeout = 10000;             // Timeout counter waiting for free mailbox
-    while (!(CAN1->TSR & CAN_TSR_TME0)   // Check if mailbox 0 is free
+    while (!(CAN1->TSR & (1 << 26))   // Check if mailbox 0 is free
            && timeout--) ;                // Decrement timeout
     if (timeout == 0) {                   // If timeout expired and mailbox not free
         return;                          // Exit without sending
     }
 
     if (isExtended) {                     // Extended frame
-        CAN1->sTxMailBox[0].TIR = ((id << 3) | CAN_TI0R_IDE); // Set extended ID and IDE bit
+        CAN1->sTxMailBox[0].TIR = (id << 3) | (1 << 2); // Set extended ID and IDE bit
     } else {                             // Standard frame
         CAN1->sTxMailBox[0].TIR = (id << 21);                 // Set standard 11-bit ID
     }
@@ -121,15 +123,17 @@ void CAN_Send(uint8_t isExtended, uint32_t id, uint8_t *data, uint8_t len) {
         }
     }
 
-    CAN1->sTxMailBox[0].TIR |= CAN_TI0R_TXRQ;    // Request transmission
+    CAN1->sTxMailBox[0].TIR |= (1 << 0);    // Request transmission
 
     timeout = 10000;                         // Timeout waiting for transmit complete or error
-    while (!(CAN1->TSR & (CAN_TSR_RQCP0     // Wait for transmit complete flag mailbox 0
-                         | CAN_TSR_TERR0    // or transmit error flag
-                         | CAN_TSR_ALST0))  // or arbitration lost flag
-           && timeout--);                    // Decrement timeout
+    while (!(CAN1->TSR & ((1 << 0)  		 // RQCP0: Request Completed Mailbox 0
+                            | (1 << 19) 	 // TERR0: Transmission Error
+                            | (1 << 20))) 	 // ALST0: Arbitration Lost
+               && timeout--) ;               // Decrement timeout
 
-    CAN1->TSR |= (CAN_TSR_RQCP0 | CAN_TSR_TERR0 | CAN_TSR_ALST0); // Clear status flags
+    CAN1->TSR |= (1 << 0)  // RQCP0
+			  | (1 << 19) // TERR0
+			  | (1 << 20); // ALST0
 }
 
 /**
@@ -142,15 +146,15 @@ void CAN_Send(uint8_t isExtended, uint32_t id, uint8_t *data, uint8_t len) {
  * @retval None
  */
 void USB_LP_CAN1_RX0_IRQHandler(void) {
-    if (CAN1->ESR & (CAN_ESR_EWGF | CAN_ESR_EPVF | CAN_ESR_BOFF)) { // Check CAN errors
-        CAN1->ESR &= ~(CAN_ESR_EWGF | CAN_ESR_EPVF | CAN_ESR_BOFF);  // Clear error flags
+	if (CAN1->ESR & ((1 << 0) | (1 << 1) | (1 << 2))) { // Check CAN errors
+		CAN1->ESR &= ~((1 << 0) | (1 << 1) | (1 << 2));  // Clear error flags
         return;                                                     // Exit if error present
     }
 
-    if (!(CAN1->RF0R & CAN_RF0R_FMP0)) return;   // Exit if FIFO0 empty
+	if (((CAN1->RF0R >> 0) & 0x03) == 0) return;   // Exit if FIFO0 empty
 
     uint32_t id = 0;                              // Variable for CAN ID
-    uint8_t isExtended = (CAN1->sFIFOMailBox[0].RIR & CAN_RI0R_IDE) ? 1 : 0; // Check extended ID
+    uint8_t isExtended = ((CAN1->sFIFOMailBox[0].RIR >> 2) & 0x01); // Check extended ID
     uint8_t len = CAN1->sFIFOMailBox[0].RDTR & 0x0F;  // Read data length (DLC)
     uint8_t data[8];                              // Data array
 
@@ -166,7 +170,7 @@ void USB_LP_CAN1_RX0_IRQHandler(void) {
         data[i] = (i < 4) ? (rdlr >> (8 * i)) & 0xFF : (rdhr >> (8 * (i - 4))) & 0xFF;
     }
 
-    CAN1->RF0R |= CAN_RF0R_RFOM0;                // Release FIFO0 (remove read message)
+    CAN1->RF0R |= (1 << 5);                // Release FIFO0 (remove read message)
 
     Process_CAN_Frame(id, isExtended, data, len); // Call function to process received CAN frame
 }

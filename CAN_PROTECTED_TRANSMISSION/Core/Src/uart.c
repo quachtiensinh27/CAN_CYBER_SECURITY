@@ -18,15 +18,15 @@
  *   Enables UART RX interrupt for receiving data byte-by-byte.
  ******************************************************************************/
 void UART_Config(void) {
-    RCC->APB2ENR |= RCC_APB2ENR_IOPAEN | RCC_APB2ENR_USART1EN;  // Enable clocks for GPIOA and USART1
+	RCC->APB2ENR |= (1 << 2)|(1 << 14);  // Enable clocks for GPIOA and USART1
 
     // Configure PA9 TX (AF push-pull) and PA10 RX (Input floating)
-    GPIOA->CRH &= ~(GPIO_CRH_CNF9 | GPIO_CRH_MODE9 | GPIO_CRH_CNF10 | GPIO_CRH_MODE10); // Clear settings
-    GPIOA->CRH |= GPIO_CRH_MODE9_1 | GPIO_CRH_CNF9_1; // TX: Alternate function push-pull, max speed 2 MHz
-    GPIOA->CRH |= GPIO_CRH_CNF10_0;                    // RX: Input floating mode
+	GPIOA->CRH &= ~((0b11 << 6) | (0b11 << 4))|~((0b11 << 10) | (0b11 << 8)); // Clear settings
+	GPIOA->CRH |= (0b10 << 4) | (0b10 << 6); // TX: Alternate function push-pull, max speed 2 MHz
+	GPIOA->CRH |= (0b01 << 10);  // RX: Input floating mode
 
     USART1->BRR = 0x45; // Set baud rate register for 9600 baud at 8 MHz clock
-    USART1->CR1 |= USART_CR1_RE | USART_CR1_TE | USART_CR1_UE | USART_CR1_RXNEIE; // Enable UART RX, TX, UART peripheral, and RX interrupt
+    USART1->CR1 |= (1 << 2) | (1 << 3) | (1 << 13) | (1 << 5); // Enable UART RX, TX, UART peripheral, and RX interrupt
     NVIC_EnableIRQ(USART1_IRQn);  // Enable USART1 interrupt in NVIC
 }
 
@@ -37,7 +37,7 @@ void UART_Config(void) {
  *   Waits until transmit buffer is empty before sending.
  ******************************************************************************/
 void UART_SendByte(uint8_t b) {
-    while (!(USART1->SR & USART_SR_TXE));  // Wait until transmit data register empty
+	while (!(USART1->SR & (1 << 7)));  // Wait until transmit data register empty
     USART1->DR = b;                        // Load byte into data register to send
 }
 
@@ -79,7 +79,7 @@ void UART_SendString(const char* s) {
  *   Resets buffer on overflow or invalid data.
  ******************************************************************************/
 void USART1_IRQHandler(void) {
-    if (USART1->SR & USART_SR_RXNE) {                // Check if RX data register is not empty (data received)
+	if (USART1->SR & (1 << 5)) {                // Check if RX data register is not empty (data received)
         uint8_t received_byte = USART1->DR;          // Read received byte clears RXNE flag
 
         // Prevent buffer overflow

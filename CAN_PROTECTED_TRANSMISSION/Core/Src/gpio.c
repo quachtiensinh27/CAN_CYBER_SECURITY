@@ -18,15 +18,15 @@
  ******************************************************************************/
 void GPIO_Config(void) {
     // Enable clocks for GPIOA, GPIOC, and AFIO
-    RCC->APB2ENR |= RCC_APB2ENR_IOPAEN | RCC_APB2ENR_IOPCEN | RCC_APB2ENR_AFIOEN;
+	RCC->APB2ENR |= (1 << 2) | (1 << 4) | (1 << 0);
 
     // Configure PA11 as input floating (CAN_RX)
-    GPIOA->CRH &= ~(GPIO_CRH_CNF11 | GPIO_CRH_MODE11);
-    GPIOA->CRH |= GPIO_CRH_CNF11_0;
+	GPIOA->CRH &= ~((0b11 << 12) | (0b11 << 14));
+	GPIOA->CRH |= (0b01 << 14);
 
     // Configure PA12 as alternate function push-pull output (CAN_TX)
-    GPIOA->CRH &= ~(GPIO_CRH_CNF12 | GPIO_CRH_MODE12);
-    GPIOA->CRH |= GPIO_CRH_MODE12_1 | GPIO_CRH_CNF12_1;
+	GPIOA->CRH &= ~((0b11 << 16) | (0b11 << 18));
+	GPIOA->CRH |= (0b10 << 16) | (0b10 << 18);
 }
 
 /******************************************************************************

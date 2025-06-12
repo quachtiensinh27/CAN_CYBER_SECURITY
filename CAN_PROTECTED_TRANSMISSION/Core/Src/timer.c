@@ -16,10 +16,10 @@
  *   Enable update interrupt and enable NVIC interrupt for Timer2.
  ******************************************************************************/
 void Timer2_Config(void) {
-    RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;   // Enable clock for TIM2
+	RCC->APB1ENR |= (1 << 0);   // Enable clock for TIM2
     TIM2->PSC = 1000 - 1;                  // Prescaler: 8 MHz / 1000 = 8 kHz (1 tick = 125 us)
     TIM2->ARR = 8000;                      // Auto-reload register for 1s period (8000 ticks * 125 us)
-    TIM2->DIER |= TIM_DIER_UIE;            // Enable update interrupt (UIE)
+    TIM2->DIER |= (1 << 0);            // Enable update interrupt (UIE)
     NVIC_EnableIRQ(TIM2_IRQn);             // Enable TIM2 interrupt in NVIC
 }
 
@@ -35,9 +35,9 @@ void Timer2_Start(uint16_t interval_ms) {
     // Adjust ARR according to 1 tick = 125 us (8 kHz)
     TIM2->ARR = (uint32_t)interval_ms * 8;  // 1 ms = 8 ticks (125 us * 8 = 1 ms)
     TIM2->CNT = 0;                          // Reset counter
-    TIM2->SR &= ~TIM_SR_UIF;                // Clear update interrupt flag
-    TIM2->DIER |= TIM_DIER_UIE;             // Enable update interrupt
-    TIM2->CR1 |= TIM_CR1_CEN;               // Enable timer counter
+    TIM2->SR &= ~(1 << 0);                // Clear update interrupt flag
+    TIM2->DIER |= (1 << 0);             // Enable update interrupt
+    TIM2->CR1 |= (1 << 0);               // Enable timer counter
 }
 
 /******************************************************************************
@@ -46,9 +46,9 @@ void Timer2_Start(uint16_t interval_ms) {
  *   Stop Timer2, disable update interrupt, and clear interrupt flag.
  ******************************************************************************/
 void Timer2_Stop(void) {
-    TIM2->CR1 &= ~TIM_CR1_CEN;              // Disable timer counter
-    TIM2->DIER &= ~TIM_DIER_UIE;            // Disable update interrupt
-    TIM2->SR &= ~TIM_SR_UIF;                 // Clear update interrupt flag
+	TIM2->CR1 &= ~(1 << 0);              // Disable timer counter
+	TIM2->DIER &= ~(1 << 0);             // Disable update interrupt
+	TIM2->SR &= ~(1 << 0);                 // Clear update interrupt flag
 }
 
 /******************************************************************************
@@ -59,8 +59,8 @@ void Timer2_Stop(void) {
  *   Update the last byte in payload as a counter to avoid duplicate frames.
  ******************************************************************************/
 void TIM2_IRQHandler(void) {
-    if (!(TIM2->SR & TIM_SR_UIF)) return;  // Check update interrupt flag
-    TIM2->SR &= ~TIM_SR_UIF;                // Clear interrupt flag
+	if (!(TIM2->SR & (1 << 0))) return;  // Check update interrupt flag
+	TIM2->SR &= ~(1 << 0);                // Clear interrupt flag
 
     if (!repeat) return;                    // Exit if repeat mode is off
 

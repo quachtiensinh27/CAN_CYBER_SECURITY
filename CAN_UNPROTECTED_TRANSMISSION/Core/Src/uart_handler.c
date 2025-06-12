@@ -42,19 +42,19 @@ volatile uint8_t uart_frame_ready = 0;  // Flag set to 1 when a full frame is re
  *        - Enable USART1 and RX interrupt
  */
 void UART_Config(void) {
-    RCC->APB2ENR |= RCC_APB2ENR_IOPAEN | RCC_APB2ENR_USART1EN;
+	RCC->APB2ENR |= (1 << 2)|(1 << 14);
     // Enable clock for GPIOA port and USART1 peripheral
 
     // Configure PA9 as TX (Alternate Function Push-Pull, max speed 2 MHz)
-    GPIOA->CRH &= ~(GPIO_CRH_CNF9 | GPIO_CRH_MODE9); // Clear previous config bits for PA9
-    GPIOA->CRH |= GPIO_CRH_MODE9_1 | GPIO_CRH_CNF9_1; // MODE9=10 (2 MHz output), CNF9=10 (AF Push-Pull)
+	GPIOA->CRH &= ~((0xF) << 4); // Clear previous config bits for PA9
+	GPIOA->CRH |= ((0x2 << 2) | (0x2)); // MODE9=10 (2 MHz output), CNF9=10 (AF Push-Pull)
 
     // Configure PA10 as RX (Input floating)
-    GPIOA->CRH &= ~(GPIO_CRH_CNF10 | GPIO_CRH_MODE10); // Clear previous config bits for PA10
-    GPIOA->CRH |= GPIO_CRH_CNF10_0;                    // CNF10=01 (Floating input), MODE10=00 (Input mode)
+	GPIOA->CRH &= ~((0xF) << 8); // Clear previous config bits for PA10
+	GPIOA->CRH |= (0x1 << 10);                    // CNF10=01 (Floating input), MODE10=00 (Input mode)
 
     USART1->BRR = 0x45;  // Set baud rate register for 9600 baud at 8 MHz clock (calculated value)
-    USART1->CR1 |= USART_CR1_RE | USART_CR1_TE | USART_CR1_UE | USART_CR1_RXNEIE;
+    USART1->CR1 |= (1 << 13)|(1 << 2)|(1 << 3)|(1 << 5);
     // Enable Receiver, Transmitter, USART, and RX interrupt enable
 
     NVIC_EnableIRQ(USART1_IRQn);  // Enable USART1 interrupt in the NVIC (Nested Vector Interrupt Controller)
@@ -86,7 +86,7 @@ void UART_Init_Buffers(void) {
  * Waits until the transmit data register is empty before sending the byte.
  */
 void UART_SendByte(uint8_t b) {
-    while (!(USART1->SR & USART_SR_TXE));  // Wait until TX register is empty (ready to transmit)
+	while (!(USART1->SR & (1 << 7)));  // Wait until TX register is empty (ready to transmit)
     USART1->DR = b;                        // Write byte to data register to send
 }
 
@@ -143,7 +143,7 @@ void UART_SendString(const char* s) {
  * has been received for processing.
  */
 void USART1_IRQHandler(void) {
-    if (USART1->SR & USART_SR_RXNE) {          // Check if RX data register not empty (byte received)
+	if (USART1->SR & (1 << 5)) {          // Check if RX data register not empty (byte received)
         uint8_t received_byte = USART1->DR;   // Read received byte (also clears RXNE flag)
 
         if (uart_rx_index >= sizeof(uart_rx_buffer)) {  // Prevent buffer overflow

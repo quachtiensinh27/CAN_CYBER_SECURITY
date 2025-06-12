@@ -122,459 +122,462 @@ __STATIC_INLINE void __NVIC_EnableIRQ(IRQn_Type IRQn)
 void CAN_Config(void) {
  8000184:	b580      	push	{r7, lr}
  8000186:	af00      	add	r7, sp, #0
-    RCC->APB1ENR |= RCC_APB1ENR_CAN1EN;   // Enable clock for CAN1
- 8000188:	4b3f      	ldr	r3, [pc, #252]	@ (8000288 <CAN_Config+0x104>)
+	RCC->APB1ENR |= (1 << 25);   // Enable clock for CAN1
+ 8000188:	4b3e      	ldr	r3, [pc, #248]	@ (8000284 <CAN_Config+0x100>)
  800018a:	69db      	ldr	r3, [r3, #28]
- 800018c:	4a3e      	ldr	r2, [pc, #248]	@ (8000288 <CAN_Config+0x104>)
+ 800018c:	4a3d      	ldr	r2, [pc, #244]	@ (8000284 <CAN_Config+0x100>)
  800018e:	f043 7300 	orr.w	r3, r3, #33554432	@ 0x2000000
  8000192:	61d3      	str	r3, [r2, #28]
 
-    CAN1->MCR |= CAN_MCR_INRQ;             // Request initialization mode
- 8000194:	4b3d      	ldr	r3, [pc, #244]	@ (800028c <CAN_Config+0x108>)
+	CAN1->MCR |= (1 << 0);            // Request initialization mode
+ 8000194:	4b3c      	ldr	r3, [pc, #240]	@ (8000288 <CAN_Config+0x104>)
  8000196:	681b      	ldr	r3, [r3, #0]
- 8000198:	4a3c      	ldr	r2, [pc, #240]	@ (800028c <CAN_Config+0x108>)
+ 8000198:	4a3b      	ldr	r2, [pc, #236]	@ (8000288 <CAN_Config+0x104>)
  800019a:	f043 0301 	orr.w	r3, r3, #1
  800019e:	6013      	str	r3, [r2, #0]
-    while (!(CAN1->MSR & CAN_MSR_INAK));  // Wait until CAN enters init mode (INAK flag set)
+	while (!(CAN1->MSR & (1 << 0)));  // Wait until CAN enters init mode (INAK flag set)
  80001a0:	bf00      	nop
- 80001a2:	4b3a      	ldr	r3, [pc, #232]	@ (800028c <CAN_Config+0x108>)
+ 80001a2:	4b39      	ldr	r3, [pc, #228]	@ (8000288 <CAN_Config+0x104>)
  80001a4:	685b      	ldr	r3, [r3, #4]
  80001a6:	f003 0301 	and.w	r3, r3, #1
  80001aa:	2b00      	cmp	r3, #0
  80001ac:	d0f9      	beq.n	80001a2 <CAN_Config+0x1e>
 
-    CAN1->MCR &= ~(CAN_MCR_SLEEP | CAN_MCR_TTCM | CAN_MCR_AWUM | CAN_MCR_NART);
- 80001ae:	4b37      	ldr	r3, [pc, #220]	@ (800028c <CAN_Config+0x108>)
+	CAN1->MCR &= ~((1 << 1)  // Bit 1: SLEEP
+ 80001ae:	4b36      	ldr	r3, [pc, #216]	@ (8000288 <CAN_Config+0x104>)
  80001b0:	681b      	ldr	r3, [r3, #0]
- 80001b2:	4a36      	ldr	r2, [pc, #216]	@ (800028c <CAN_Config+0x108>)
- 80001b4:	f023 03b2 	bic.w	r3, r3, #178	@ 0xb2
+ 80001b2:	4a35      	ldr	r2, [pc, #212]	@ (8000288 <CAN_Config+0x104>)
+ 80001b4:	f023 03d2 	bic.w	r3, r3, #210	@ 0xd2
  80001b8:	6013      	str	r3, [r2, #0]
-    // Disable sleep mode, time-triggered communication, auto wake-up, and no automatic retransmission
+				 | (1 << 7)  // Bit 7: TTCM
+				 | (1 << 6)  // Bit 6: AWUM
+				 | (1 << 4)); // Bit 4: NART
 
-    CAN1->MCR |= CAN_MCR_ABOM;             // Enable automatic bus-off management
- 80001ba:	4b34      	ldr	r3, [pc, #208]	@ (800028c <CAN_Config+0x108>)
+    CAN1->MCR |= (1 << 2);             // Enable automatic bus-off management
+ 80001ba:	4b33      	ldr	r3, [pc, #204]	@ (8000288 <CAN_Config+0x104>)
  80001bc:	681b      	ldr	r3, [r3, #0]
- 80001be:	4a33      	ldr	r2, [pc, #204]	@ (800028c <CAN_Config+0x108>)
- 80001c0:	f043 0340 	orr.w	r3, r3, #64	@ 0x40
+ 80001be:	4a32      	ldr	r2, [pc, #200]	@ (8000288 <CAN_Config+0x104>)
+ 80001c0:	f043 0304 	orr.w	r3, r3, #4
  80001c4:	6013      	str	r3, [r2, #0]
 
     CAN1->BTR = (0 << 24)                  // SJW = 1 (bits 24-25 = 00)
- 80001c6:	4b31      	ldr	r3, [pc, #196]	@ (800028c <CAN_Config+0x108>)
- 80001c8:	4a31      	ldr	r2, [pc, #196]	@ (8000290 <CAN_Config+0x10c>)
+ 80001c6:	4b30      	ldr	r3, [pc, #192]	@ (8000288 <CAN_Config+0x104>)
+ 80001c8:	4a30      	ldr	r2, [pc, #192]	@ (800028c <CAN_Config+0x108>)
  80001ca:	61da      	str	r2, [r3, #28]
               | (1 << 16)                  // BS1 = 1 (bits 16-19)
               | (0 << 20)                  // BS2 = 0 (bits 20-22)
               | (3 << 0);                  // Prescaler = 4 (0-based: 3 means divide by 4)
 
-    CAN1->FMR |= CAN_FMR_FINIT;            // Enter filter init mode
- 80001cc:	4b2f      	ldr	r3, [pc, #188]	@ (800028c <CAN_Config+0x108>)
+    CAN1->FMR |= (1 << 0);            // Enter filter init mode
+ 80001cc:	4b2e      	ldr	r3, [pc, #184]	@ (8000288 <CAN_Config+0x104>)
  80001ce:	f8d3 3200 	ldr.w	r3, [r3, #512]	@ 0x200
- 80001d2:	4a2e      	ldr	r2, [pc, #184]	@ (800028c <CAN_Config+0x108>)
+ 80001d2:	4a2d      	ldr	r2, [pc, #180]	@ (8000288 <CAN_Config+0x104>)
  80001d4:	f043 0301 	orr.w	r3, r3, #1
  80001d8:	f8c2 3200 	str.w	r3, [r2, #512]	@ 0x200
     CAN1->FA1R &= ~(1 << 0);               // Deactivate filter 0
- 80001dc:	4b2b      	ldr	r3, [pc, #172]	@ (800028c <CAN_Config+0x108>)
+ 80001dc:	4b2a      	ldr	r3, [pc, #168]	@ (8000288 <CAN_Config+0x104>)
  80001de:	f8d3 321c 	ldr.w	r3, [r3, #540]	@ 0x21c
- 80001e2:	4a2a      	ldr	r2, [pc, #168]	@ (800028c <CAN_Config+0x108>)
+ 80001e2:	4a29      	ldr	r2, [pc, #164]	@ (8000288 <CAN_Config+0x104>)
  80001e4:	f023 0301 	bic.w	r3, r3, #1
  80001e8:	f8c2 321c 	str.w	r3, [r2, #540]	@ 0x21c
     CAN1->FS1R |= (1 << 0);                // Set filter 0 to 32-bit scale
- 80001ec:	4b27      	ldr	r3, [pc, #156]	@ (800028c <CAN_Config+0x108>)
+ 80001ec:	4b26      	ldr	r3, [pc, #152]	@ (8000288 <CAN_Config+0x104>)
  80001ee:	f8d3 320c 	ldr.w	r3, [r3, #524]	@ 0x20c
- 80001f2:	4a26      	ldr	r2, [pc, #152]	@ (800028c <CAN_Config+0x108>)
+ 80001f2:	4a25      	ldr	r2, [pc, #148]	@ (8000288 <CAN_Config+0x104>)
  80001f4:	f043 0301 	orr.w	r3, r3, #1
  80001f8:	f8c2 320c 	str.w	r3, [r2, #524]	@ 0x20c
     CAN1->FM1R &= ~(1 << 0);               // Set filter 0 to mask mode
- 80001fc:	4b23      	ldr	r3, [pc, #140]	@ (800028c <CAN_Config+0x108>)
+ 80001fc:	4b22      	ldr	r3, [pc, #136]	@ (8000288 <CAN_Config+0x104>)
  80001fe:	f8d3 3204 	ldr.w	r3, [r3, #516]	@ 0x204
- 8000202:	4a22      	ldr	r2, [pc, #136]	@ (800028c <CAN_Config+0x108>)
+ 8000202:	4a21      	ldr	r2, [pc, #132]	@ (8000288 <CAN_Config+0x104>)
  8000204:	f023 0301 	bic.w	r3, r3, #1
  8000208:	f8c2 3204 	str.w	r3, [r2, #516]	@ 0x204
     CAN1->sFilterRegister[0].FR1 = 0x00000000; // Set 32-bit mask = 0 (accept all)
- 800020c:	4b1f      	ldr	r3, [pc, #124]	@ (800028c <CAN_Config+0x108>)
+ 800020c:	4b1e      	ldr	r3, [pc, #120]	@ (8000288 <CAN_Config+0x104>)
  800020e:	2200      	movs	r2, #0
  8000210:	f8c3 2240 	str.w	r2, [r3, #576]	@ 0x240
     CAN1->sFilterRegister[0].FR2 = 0x00000000; // Set 32-bit mask = 0 (accept all)
- 8000214:	4b1d      	ldr	r3, [pc, #116]	@ (800028c <CAN_Config+0x108>)
+ 8000214:	4b1c      	ldr	r3, [pc, #112]	@ (8000288 <CAN_Config+0x104>)
  8000216:	2200      	movs	r2, #0
  8000218:	f8c3 2244 	str.w	r2, [r3, #580]	@ 0x244
     CAN1->FFA1R &= ~(1 << 0);              // Assign filter 0 to FIFO 0
- 800021c:	4b1b      	ldr	r3, [pc, #108]	@ (800028c <CAN_Config+0x108>)
+ 800021c:	4b1a      	ldr	r3, [pc, #104]	@ (8000288 <CAN_Config+0x104>)
  800021e:	f8d3 3214 	ldr.w	r3, [r3, #532]	@ 0x214
- 8000222:	4a1a      	ldr	r2, [pc, #104]	@ (800028c <CAN_Config+0x108>)
+ 8000222:	4a19      	ldr	r2, [pc, #100]	@ (8000288 <CAN_Config+0x104>)
  8000224:	f023 0301 	bic.w	r3, r3, #1
  8000228:	f8c2 3214 	str.w	r3, [r2, #532]	@ 0x214
     CAN1->FA1R |= (1 << 0);                // Activate filter 0
- 800022c:	4b17      	ldr	r3, [pc, #92]	@ (800028c <CAN_Config+0x108>)
+ 800022c:	4b16      	ldr	r3, [pc, #88]	@ (8000288 <CAN_Config+0x104>)
  800022e:	f8d3 321c 	ldr.w	r3, [r3, #540]	@ 0x21c
- 8000232:	4a16      	ldr	r2, [pc, #88]	@ (800028c <CAN_Config+0x108>)
+ 8000232:	4a15      	ldr	r2, [pc, #84]	@ (8000288 <CAN_Config+0x104>)
  8000234:	f043 0301 	orr.w	r3, r3, #1
  8000238:	f8c2 321c 	str.w	r3, [r2, #540]	@ 0x21c
-    CAN1->FMR &= ~CAN_FMR_FINIT;           // Exit filter init mode
- 800023c:	4b13      	ldr	r3, [pc, #76]	@ (800028c <CAN_Config+0x108>)
+    CAN1->FMR &= ~(1 << 0);           // Exit filter init mode
+ 800023c:	4b12      	ldr	r3, [pc, #72]	@ (8000288 <CAN_Config+0x104>)
  800023e:	f8d3 3200 	ldr.w	r3, [r3, #512]	@ 0x200
- 8000242:	4a12      	ldr	r2, [pc, #72]	@ (800028c <CAN_Config+0x108>)
+ 8000242:	4a11      	ldr	r2, [pc, #68]	@ (8000288 <CAN_Config+0x104>)
  8000244:	f023 0301 	bic.w	r3, r3, #1
  8000248:	f8c2 3200 	str.w	r3, [r2, #512]	@ 0x200
 
-    CAN1->IER |= CAN_IER_FMPIE0            // Enable FIFO0 message pending interrupt
- 800024c:	4b0f      	ldr	r3, [pc, #60]	@ (800028c <CAN_Config+0x108>)
+    CAN1->IER |= (1 << 1)  // Bit 1: FMPIE0
+ 800024c:	4b0e      	ldr	r3, [pc, #56]	@ (8000288 <CAN_Config+0x104>)
  800024e:	695b      	ldr	r3, [r3, #20]
- 8000250:	4a0e      	ldr	r2, [pc, #56]	@ (800028c <CAN_Config+0x108>)
- 8000252:	f443 63e0 	orr.w	r3, r3, #1792	@ 0x700
- 8000256:	f043 0302 	orr.w	r3, r3, #2
- 800025a:	6153      	str	r3, [r2, #20]
-                 | CAN_IER_EWGIE            // Enable error warning interrupt
-                 | CAN_IER_EPVIE            // Enable error passive interrupt
-                 | CAN_IER_BOFIE;           // Enable bus-off interrupt
+ 8000250:	4a0d      	ldr	r2, [pc, #52]	@ (8000288 <CAN_Config+0x104>)
+ 8000252:	f043 031e 	orr.w	r3, r3, #30
+ 8000256:	6153      	str	r3, [r2, #20]
+			  | (1 << 2)  // Bit 2: EWGIE
+			  | (1 << 3)  // Bit 3: EPVIE
+			  | (1 << 4); // Bit 4: BOFIE       // Enable bus-off interrupt
 
     NVIC_EnableIRQ(CAN1_RX0_IRQn);         // Enable CAN1 RX FIFO0 interrupt in NVIC
- 800025c:	2014      	movs	r0, #20
- 800025e:	f7ff ff75 	bl	800014c <__NVIC_EnableIRQ>
+ 8000258:	2014      	movs	r0, #20
+ 800025a:	f7ff ff77 	bl	800014c <__NVIC_EnableIRQ>
     NVIC_EnableIRQ(CAN1_TX_IRQn);          // Enable CAN1 TX interrupt in NVIC
- 8000262:	2013      	movs	r0, #19
- 8000264:	f7ff ff72 	bl	800014c <__NVIC_EnableIRQ>
+ 800025e:	2013      	movs	r0, #19
+ 8000260:	f7ff ff74 	bl	800014c <__NVIC_EnableIRQ>
 
-    CAN1->MCR &= ~CAN_MCR_INRQ;            // Exit initialization mode
- 8000268:	4b08      	ldr	r3, [pc, #32]	@ (800028c <CAN_Config+0x108>)
- 800026a:	681b      	ldr	r3, [r3, #0]
- 800026c:	4a07      	ldr	r2, [pc, #28]	@ (800028c <CAN_Config+0x108>)
- 800026e:	f023 0301 	bic.w	r3, r3, #1
- 8000272:	6013      	str	r3, [r2, #0]
-    while (CAN1->MSR & CAN_MSR_INAK);      // Wait until initialization mode cleared
- 8000274:	bf00      	nop
- 8000276:	4b05      	ldr	r3, [pc, #20]	@ (800028c <CAN_Config+0x108>)
- 8000278:	685b      	ldr	r3, [r3, #4]
- 800027a:	f003 0301 	and.w	r3, r3, #1
- 800027e:	2b00      	cmp	r3, #0
- 8000280:	d1f9      	bne.n	8000276 <CAN_Config+0xf2>
+    CAN1->MCR &= ~(1 << 0);	            // Exit initialization mode
+ 8000264:	4b08      	ldr	r3, [pc, #32]	@ (8000288 <CAN_Config+0x104>)
+ 8000266:	681b      	ldr	r3, [r3, #0]
+ 8000268:	4a07      	ldr	r2, [pc, #28]	@ (8000288 <CAN_Config+0x104>)
+ 800026a:	f023 0301 	bic.w	r3, r3, #1
+ 800026e:	6013      	str	r3, [r2, #0]
+    while (CAN1->MSR & (1 << 0));       // Wait until initialization mode cleared
+ 8000270:	bf00      	nop
+ 8000272:	4b05      	ldr	r3, [pc, #20]	@ (8000288 <CAN_Config+0x104>)
+ 8000274:	685b      	ldr	r3, [r3, #4]
+ 8000276:	f003 0301 	and.w	r3, r3, #1
+ 800027a:	2b00      	cmp	r3, #0
+ 800027c:	d1f9      	bne.n	8000272 <CAN_Config+0xee>
 }
- 8000282:	bf00      	nop
- 8000284:	bf00      	nop
- 8000286:	bd80      	pop	{r7, pc}
- 8000288:	40021000 	.word	0x40021000
- 800028c:	40006400 	.word	0x40006400
- 8000290:	00010003 	.word	0x00010003
+ 800027e:	bf00      	nop
+ 8000280:	bf00      	nop
+ 8000282:	bd80      	pop	{r7, pc}
+ 8000284:	40021000 	.word	0x40021000
+ 8000288:	40006400 	.word	0x40006400
+ 800028c:	00010003 	.word	0x00010003
 
-08000294 <CAN_Send>:
+08000290 <CAN_Send>:
  * @param[in] id          CAN ID (11 or 29 bits)
  * @param[in] data        Pointer to data bytes (up to 8)
  * @param[in] len         Number of data bytes (0-8)
  * @retval None
  */
 void CAN_Send(uint8_t isExtended, uint32_t id, uint8_t *data, uint8_t len) {
- 8000294:	b480      	push	{r7}
- 8000296:	b087      	sub	sp, #28
- 8000298:	af00      	add	r7, sp, #0
- 800029a:	60b9      	str	r1, [r7, #8]
- 800029c:	607a      	str	r2, [r7, #4]
- 800029e:	461a      	mov	r2, r3
- 80002a0:	4603      	mov	r3, r0
- 80002a2:	73fb      	strb	r3, [r7, #15]
- 80002a4:	4613      	mov	r3, r2
- 80002a6:	73bb      	strb	r3, [r7, #14]
-    if (CAN1->ESR & CAN_ESR_BOFF) {       // If bus is off, cannot send
- 80002a8:	4b46      	ldr	r3, [pc, #280]	@ (80003c4 <CAN_Send+0x130>)
- 80002aa:	699b      	ldr	r3, [r3, #24]
- 80002ac:	f003 0304 	and.w	r3, r3, #4
- 80002b0:	2b00      	cmp	r3, #0
- 80002b2:	d17f      	bne.n	80003b4 <CAN_Send+0x120>
+ 8000290:	b480      	push	{r7}
+ 8000292:	b087      	sub	sp, #28
+ 8000294:	af00      	add	r7, sp, #0
+ 8000296:	60b9      	str	r1, [r7, #8]
+ 8000298:	607a      	str	r2, [r7, #4]
+ 800029a:	461a      	mov	r2, r3
+ 800029c:	4603      	mov	r3, r0
+ 800029e:	73fb      	strb	r3, [r7, #15]
+ 80002a0:	4613      	mov	r3, r2
+ 80002a2:	73bb      	strb	r3, [r7, #14]
+	if (CAN1->ESR & (1 << 2)) {       // If bus is off, cannot send
+ 80002a4:	4b47      	ldr	r3, [pc, #284]	@ (80003c4 <CAN_Send+0x134>)
+ 80002a6:	699b      	ldr	r3, [r3, #24]
+ 80002a8:	f003 0304 	and.w	r3, r3, #4
+ 80002ac:	2b00      	cmp	r3, #0
+ 80002ae:	f040 8082 	bne.w	80003b6 <CAN_Send+0x126>
         return;                           // Exit function
     }
 
     uint32_t timeout = 10000;             // Timeout counter waiting for free mailbox
- 80002b4:	f242 7310 	movw	r3, #10000	@ 0x2710
- 80002b8:	617b      	str	r3, [r7, #20]
-    while (!(CAN1->TSR & CAN_TSR_TME0)   // Check if mailbox 0 is free
- 80002ba:	bf00      	nop
- 80002bc:	4b41      	ldr	r3, [pc, #260]	@ (80003c4 <CAN_Send+0x130>)
- 80002be:	689b      	ldr	r3, [r3, #8]
- 80002c0:	f003 6380 	and.w	r3, r3, #67108864	@ 0x4000000
+ 80002b2:	f242 7310 	movw	r3, #10000	@ 0x2710
+ 80002b6:	617b      	str	r3, [r7, #20]
+    while (!(CAN1->TSR & (1 << 26))   // Check if mailbox 0 is free
+ 80002b8:	bf00      	nop
+ 80002ba:	4b42      	ldr	r3, [pc, #264]	@ (80003c4 <CAN_Send+0x134>)
+ 80002bc:	689b      	ldr	r3, [r3, #8]
+ 80002be:	f003 6380 	and.w	r3, r3, #67108864	@ 0x4000000
            && timeout--) ;                // Decrement timeout
- 80002c4:	2b00      	cmp	r3, #0
- 80002c6:	d104      	bne.n	80002d2 <CAN_Send+0x3e>
- 80002c8:	697b      	ldr	r3, [r7, #20]
- 80002ca:	1e5a      	subs	r2, r3, #1
- 80002cc:	617a      	str	r2, [r7, #20]
- 80002ce:	2b00      	cmp	r3, #0
- 80002d0:	d1f4      	bne.n	80002bc <CAN_Send+0x28>
+ 80002c2:	2b00      	cmp	r3, #0
+ 80002c4:	d104      	bne.n	80002d0 <CAN_Send+0x40>
+ 80002c6:	697b      	ldr	r3, [r7, #20]
+ 80002c8:	1e5a      	subs	r2, r3, #1
+ 80002ca:	617a      	str	r2, [r7, #20]
+ 80002cc:	2b00      	cmp	r3, #0
+ 80002ce:	d1f4      	bne.n	80002ba <CAN_Send+0x2a>
     if (timeout == 0) {                   // If timeout expired and mailbox not free
- 80002d2:	697b      	ldr	r3, [r7, #20]
- 80002d4:	2b00      	cmp	r3, #0
- 80002d6:	d06f      	beq.n	80003b8 <CAN_Send+0x124>
+ 80002d0:	697b      	ldr	r3, [r7, #20]
+ 80002d2:	2b00      	cmp	r3, #0
+ 80002d4:	d071      	beq.n	80003ba <CAN_Send+0x12a>
         return;                          // Exit without sending
     }
 
     if (isExtended) {                     // Extended frame
- 80002d8:	7bfb      	ldrb	r3, [r7, #15]
- 80002da:	2b00      	cmp	r3, #0
- 80002dc:	d007      	beq.n	80002ee <CAN_Send+0x5a>
-        CAN1->sTxMailBox[0].TIR = ((id << 3) | CAN_TI0R_IDE); // Set extended ID and IDE bit
- 80002de:	68bb      	ldr	r3, [r7, #8]
- 80002e0:	00db      	lsls	r3, r3, #3
- 80002e2:	4a38      	ldr	r2, [pc, #224]	@ (80003c4 <CAN_Send+0x130>)
- 80002e4:	f043 0304 	orr.w	r3, r3, #4
- 80002e8:	f8c2 3180 	str.w	r3, [r2, #384]	@ 0x180
- 80002ec:	e004      	b.n	80002f8 <CAN_Send+0x64>
+ 80002d6:	7bfb      	ldrb	r3, [r7, #15]
+ 80002d8:	2b00      	cmp	r3, #0
+ 80002da:	d007      	beq.n	80002ec <CAN_Send+0x5c>
+        CAN1->sTxMailBox[0].TIR = (id << 3) | (1 << 2); // Set extended ID and IDE bit
+ 80002dc:	68bb      	ldr	r3, [r7, #8]
+ 80002de:	00db      	lsls	r3, r3, #3
+ 80002e0:	4a38      	ldr	r2, [pc, #224]	@ (80003c4 <CAN_Send+0x134>)
+ 80002e2:	f043 0304 	orr.w	r3, r3, #4
+ 80002e6:	f8c2 3180 	str.w	r3, [r2, #384]	@ 0x180
+ 80002ea:	e004      	b.n	80002f6 <CAN_Send+0x66>
     } else {                             // Standard frame
         CAN1->sTxMailBox[0].TIR = (id << 21);                 // Set standard 11-bit ID
- 80002ee:	4a35      	ldr	r2, [pc, #212]	@ (80003c4 <CAN_Send+0x130>)
- 80002f0:	68bb      	ldr	r3, [r7, #8]
- 80002f2:	055b      	lsls	r3, r3, #21
- 80002f4:	f8c2 3180 	str.w	r3, [r2, #384]	@ 0x180
+ 80002ec:	4a35      	ldr	r2, [pc, #212]	@ (80003c4 <CAN_Send+0x134>)
+ 80002ee:	68bb      	ldr	r3, [r7, #8]
+ 80002f0:	055b      	lsls	r3, r3, #21
+ 80002f2:	f8c2 3180 	str.w	r3, [r2, #384]	@ 0x180
     }
 
     CAN1->sTxMailBox[0].TDTR = len & 0x0F;  // Set data length (DLC) (0-8)
- 80002f8:	7bbb      	ldrb	r3, [r7, #14]
- 80002fa:	4a32      	ldr	r2, [pc, #200]	@ (80003c4 <CAN_Send+0x130>)
- 80002fc:	f003 030f 	and.w	r3, r3, #15
- 8000300:	f8c2 3184 	str.w	r3, [r2, #388]	@ 0x184
+ 80002f6:	7bbb      	ldrb	r3, [r7, #14]
+ 80002f8:	4a32      	ldr	r2, [pc, #200]	@ (80003c4 <CAN_Send+0x134>)
+ 80002fa:	f003 030f 	and.w	r3, r3, #15
+ 80002fe:	f8c2 3184 	str.w	r3, [r2, #388]	@ 0x184
 
     CAN1->sTxMailBox[0].TDLR = 0;         // Clear low data register (first 4 bytes)
- 8000304:	4b2f      	ldr	r3, [pc, #188]	@ (80003c4 <CAN_Send+0x130>)
- 8000306:	2200      	movs	r2, #0
- 8000308:	f8c3 2188 	str.w	r2, [r3, #392]	@ 0x188
+ 8000302:	4b30      	ldr	r3, [pc, #192]	@ (80003c4 <CAN_Send+0x134>)
+ 8000304:	2200      	movs	r2, #0
+ 8000306:	f8c3 2188 	str.w	r2, [r3, #392]	@ 0x188
     CAN1->sTxMailBox[0].TDHR = 0;         // Clear high data register (next 4 bytes)
- 800030c:	4b2d      	ldr	r3, [pc, #180]	@ (80003c4 <CAN_Send+0x130>)
- 800030e:	2200      	movs	r2, #0
- 8000310:	f8c3 218c 	str.w	r2, [r3, #396]	@ 0x18c
+ 800030a:	4b2e      	ldr	r3, [pc, #184]	@ (80003c4 <CAN_Send+0x134>)
+ 800030c:	2200      	movs	r2, #0
+ 800030e:	f8c3 218c 	str.w	r2, [r3, #396]	@ 0x18c
 
     for (uint8_t i = 0; i < len && i < 8; i++) {  // Copy data bytes into mailbox registers
- 8000314:	2300      	movs	r3, #0
- 8000316:	74fb      	strb	r3, [r7, #19]
- 8000318:	e027      	b.n	800036a <CAN_Send+0xd6>
+ 8000312:	2300      	movs	r3, #0
+ 8000314:	74fb      	strb	r3, [r7, #19]
+ 8000316:	e027      	b.n	8000368 <CAN_Send+0xd8>
         if (i < 4) {
- 800031a:	7cfb      	ldrb	r3, [r7, #19]
- 800031c:	2b03      	cmp	r3, #3
- 800031e:	d810      	bhi.n	8000342 <CAN_Send+0xae>
+ 8000318:	7cfb      	ldrb	r3, [r7, #19]
+ 800031a:	2b03      	cmp	r3, #3
+ 800031c:	d810      	bhi.n	8000340 <CAN_Send+0xb0>
             CAN1->sTxMailBox[0].TDLR |= ((uint32_t)data[i] << (8 * i));  // first 4 bytes
- 8000320:	4b28      	ldr	r3, [pc, #160]	@ (80003c4 <CAN_Send+0x130>)
- 8000322:	f8d3 2188 	ldr.w	r2, [r3, #392]	@ 0x188
- 8000326:	7cfb      	ldrb	r3, [r7, #19]
- 8000328:	6879      	ldr	r1, [r7, #4]
- 800032a:	440b      	add	r3, r1
- 800032c:	781b      	ldrb	r3, [r3, #0]
- 800032e:	4619      	mov	r1, r3
- 8000330:	7cfb      	ldrb	r3, [r7, #19]
- 8000332:	00db      	lsls	r3, r3, #3
- 8000334:	fa01 f303 	lsl.w	r3, r1, r3
- 8000338:	4922      	ldr	r1, [pc, #136]	@ (80003c4 <CAN_Send+0x130>)
- 800033a:	4313      	orrs	r3, r2
- 800033c:	f8c1 3188 	str.w	r3, [r1, #392]	@ 0x188
- 8000340:	e010      	b.n	8000364 <CAN_Send+0xd0>
+ 800031e:	4b29      	ldr	r3, [pc, #164]	@ (80003c4 <CAN_Send+0x134>)
+ 8000320:	f8d3 2188 	ldr.w	r2, [r3, #392]	@ 0x188
+ 8000324:	7cfb      	ldrb	r3, [r7, #19]
+ 8000326:	6879      	ldr	r1, [r7, #4]
+ 8000328:	440b      	add	r3, r1
+ 800032a:	781b      	ldrb	r3, [r3, #0]
+ 800032c:	4619      	mov	r1, r3
+ 800032e:	7cfb      	ldrb	r3, [r7, #19]
+ 8000330:	00db      	lsls	r3, r3, #3
+ 8000332:	fa01 f303 	lsl.w	r3, r1, r3
+ 8000336:	4923      	ldr	r1, [pc, #140]	@ (80003c4 <CAN_Send+0x134>)
+ 8000338:	4313      	orrs	r3, r2
+ 800033a:	f8c1 3188 	str.w	r3, [r1, #392]	@ 0x188
+ 800033e:	e010      	b.n	8000362 <CAN_Send+0xd2>
         } else {
             CAN1->sTxMailBox[0].TDHR |= ((uint32_t)data[i] << (8 * (i - 4))); // next 4 bytes
- 8000342:	4b20      	ldr	r3, [pc, #128]	@ (80003c4 <CAN_Send+0x130>)
- 8000344:	f8d3 218c 	ldr.w	r2, [r3, #396]	@ 0x18c
- 8000348:	7cfb      	ldrb	r3, [r7, #19]
- 800034a:	6879      	ldr	r1, [r7, #4]
- 800034c:	440b      	add	r3, r1
- 800034e:	781b      	ldrb	r3, [r3, #0]
- 8000350:	4619      	mov	r1, r3
- 8000352:	7cfb      	ldrb	r3, [r7, #19]
- 8000354:	3b04      	subs	r3, #4
- 8000356:	00db      	lsls	r3, r3, #3
- 8000358:	fa01 f303 	lsl.w	r3, r1, r3
- 800035c:	4919      	ldr	r1, [pc, #100]	@ (80003c4 <CAN_Send+0x130>)
- 800035e:	4313      	orrs	r3, r2
- 8000360:	f8c1 318c 	str.w	r3, [r1, #396]	@ 0x18c
+ 8000340:	4b20      	ldr	r3, [pc, #128]	@ (80003c4 <CAN_Send+0x134>)
+ 8000342:	f8d3 218c 	ldr.w	r2, [r3, #396]	@ 0x18c
+ 8000346:	7cfb      	ldrb	r3, [r7, #19]
+ 8000348:	6879      	ldr	r1, [r7, #4]
+ 800034a:	440b      	add	r3, r1
+ 800034c:	781b      	ldrb	r3, [r3, #0]
+ 800034e:	4619      	mov	r1, r3
+ 8000350:	7cfb      	ldrb	r3, [r7, #19]
+ 8000352:	3b04      	subs	r3, #4
+ 8000354:	00db      	lsls	r3, r3, #3
+ 8000356:	fa01 f303 	lsl.w	r3, r1, r3
+ 800035a:	491a      	ldr	r1, [pc, #104]	@ (80003c4 <CAN_Send+0x134>)
+ 800035c:	4313      	orrs	r3, r2
+ 800035e:	f8c1 318c 	str.w	r3, [r1, #396]	@ 0x18c
     for (uint8_t i = 0; i < len && i < 8; i++) {  // Copy data bytes into mailbox registers
- 8000364:	7cfb      	ldrb	r3, [r7, #19]
- 8000366:	3301      	adds	r3, #1
- 8000368:	74fb      	strb	r3, [r7, #19]
- 800036a:	7cfa      	ldrb	r2, [r7, #19]
- 800036c:	7bbb      	ldrb	r3, [r7, #14]
- 800036e:	429a      	cmp	r2, r3
- 8000370:	d202      	bcs.n	8000378 <CAN_Send+0xe4>
- 8000372:	7cfb      	ldrb	r3, [r7, #19]
- 8000374:	2b07      	cmp	r3, #7
- 8000376:	d9d0      	bls.n	800031a <CAN_Send+0x86>
+ 8000362:	7cfb      	ldrb	r3, [r7, #19]
+ 8000364:	3301      	adds	r3, #1
+ 8000366:	74fb      	strb	r3, [r7, #19]
+ 8000368:	7cfa      	ldrb	r2, [r7, #19]
+ 800036a:	7bbb      	ldrb	r3, [r7, #14]
+ 800036c:	429a      	cmp	r2, r3
+ 800036e:	d202      	bcs.n	8000376 <CAN_Send+0xe6>
+ 8000370:	7cfb      	ldrb	r3, [r7, #19]
+ 8000372:	2b07      	cmp	r3, #7
+ 8000374:	d9d0      	bls.n	8000318 <CAN_Send+0x88>
         }
     }
 
-    CAN1->sTxMailBox[0].TIR |= CAN_TI0R_TXRQ;    // Request transmission
- 8000378:	4b12      	ldr	r3, [pc, #72]	@ (80003c4 <CAN_Send+0x130>)
- 800037a:	f8d3 3180 	ldr.w	r3, [r3, #384]	@ 0x180
- 800037e:	4a11      	ldr	r2, [pc, #68]	@ (80003c4 <CAN_Send+0x130>)
- 8000380:	f043 0301 	orr.w	r3, r3, #1
- 8000384:	f8c2 3180 	str.w	r3, [r2, #384]	@ 0x180
+    CAN1->sTxMailBox[0].TIR |= (1 << 0);    // Request transmission
+ 8000376:	4b13      	ldr	r3, [pc, #76]	@ (80003c4 <CAN_Send+0x134>)
+ 8000378:	f8d3 3180 	ldr.w	r3, [r3, #384]	@ 0x180
+ 800037c:	4a11      	ldr	r2, [pc, #68]	@ (80003c4 <CAN_Send+0x134>)
+ 800037e:	f043 0301 	orr.w	r3, r3, #1
+ 8000382:	f8c2 3180 	str.w	r3, [r2, #384]	@ 0x180
 
     timeout = 10000;                         // Timeout waiting for transmit complete or error
- 8000388:	f242 7310 	movw	r3, #10000	@ 0x2710
- 800038c:	617b      	str	r3, [r7, #20]
-    while (!(CAN1->TSR & (CAN_TSR_RQCP0     // Wait for transmit complete flag mailbox 0
- 800038e:	bf00      	nop
- 8000390:	4b0c      	ldr	r3, [pc, #48]	@ (80003c4 <CAN_Send+0x130>)
- 8000392:	689b      	ldr	r3, [r3, #8]
- 8000394:	f003 030d 	and.w	r3, r3, #13
-                         | CAN_TSR_TERR0    // or transmit error flag
-                         | CAN_TSR_ALST0))  // or arbitration lost flag
-           && timeout--);                    // Decrement timeout
- 8000398:	2b00      	cmp	r3, #0
- 800039a:	d104      	bne.n	80003a6 <CAN_Send+0x112>
- 800039c:	697b      	ldr	r3, [r7, #20]
- 800039e:	1e5a      	subs	r2, r3, #1
- 80003a0:	617a      	str	r2, [r7, #20]
- 80003a2:	2b00      	cmp	r3, #0
- 80003a4:	d1f4      	bne.n	8000390 <CAN_Send+0xfc>
+ 8000386:	f242 7310 	movw	r3, #10000	@ 0x2710
+ 800038a:	617b      	str	r3, [r7, #20]
+    while (!(CAN1->TSR & ((1 << 0)  		 // RQCP0: Request Completed Mailbox 0
+ 800038c:	bf00      	nop
+ 800038e:	4b0d      	ldr	r3, [pc, #52]	@ (80003c4 <CAN_Send+0x134>)
+ 8000390:	689a      	ldr	r2, [r3, #8]
+ 8000392:	4b0d      	ldr	r3, [pc, #52]	@ (80003c8 <CAN_Send+0x138>)
+ 8000394:	4013      	ands	r3, r2
+                            | (1 << 19) 	 // TERR0: Transmission Error
+                            | (1 << 20))) 	 // ALST0: Arbitration Lost
+               && timeout--) ;               // Decrement timeout
+ 8000396:	2b00      	cmp	r3, #0
+ 8000398:	d104      	bne.n	80003a4 <CAN_Send+0x114>
+ 800039a:	697b      	ldr	r3, [r7, #20]
+ 800039c:	1e5a      	subs	r2, r3, #1
+ 800039e:	617a      	str	r2, [r7, #20]
+ 80003a0:	2b00      	cmp	r3, #0
+ 80003a2:	d1f4      	bne.n	800038e <CAN_Send+0xfe>
 
-    CAN1->TSR |= (CAN_TSR_RQCP0 | CAN_TSR_TERR0 | CAN_TSR_ALST0); // Clear status flags
- 80003a6:	4b07      	ldr	r3, [pc, #28]	@ (80003c4 <CAN_Send+0x130>)
- 80003a8:	689b      	ldr	r3, [r3, #8]
- 80003aa:	4a06      	ldr	r2, [pc, #24]	@ (80003c4 <CAN_Send+0x130>)
- 80003ac:	f043 030d 	orr.w	r3, r3, #13
- 80003b0:	6093      	str	r3, [r2, #8]
- 80003b2:	e002      	b.n	80003ba <CAN_Send+0x126>
+    CAN1->TSR |= (1 << 0)  // RQCP0
+ 80003a4:	4b07      	ldr	r3, [pc, #28]	@ (80003c4 <CAN_Send+0x134>)
+ 80003a6:	689b      	ldr	r3, [r3, #8]
+ 80003a8:	4a06      	ldr	r2, [pc, #24]	@ (80003c4 <CAN_Send+0x134>)
+ 80003aa:	f443 13c0 	orr.w	r3, r3, #1572864	@ 0x180000
+ 80003ae:	f043 0301 	orr.w	r3, r3, #1
+ 80003b2:	6093      	str	r3, [r2, #8]
+ 80003b4:	e002      	b.n	80003bc <CAN_Send+0x12c>
         return;                           // Exit function
- 80003b4:	bf00      	nop
- 80003b6:	e000      	b.n	80003ba <CAN_Send+0x126>
+ 80003b6:	bf00      	nop
+ 80003b8:	e000      	b.n	80003bc <CAN_Send+0x12c>
         return;                          // Exit without sending
- 80003b8:	bf00      	nop
+ 80003ba:	bf00      	nop
+			  | (1 << 19) // TERR0
+			  | (1 << 20); // ALST0
 }
- 80003ba:	371c      	adds	r7, #28
- 80003bc:	46bd      	mov	sp, r7
- 80003be:	bc80      	pop	{r7}
- 80003c0:	4770      	bx	lr
- 80003c2:	bf00      	nop
+ 80003bc:	371c      	adds	r7, #28
+ 80003be:	46bd      	mov	sp, r7
+ 80003c0:	bc80      	pop	{r7}
+ 80003c2:	4770      	bx	lr
  80003c4:	40006400 	.word	0x40006400
+ 80003c8:	00180001 	.word	0x00180001
 
-080003c8 <USB_LP_CAN1_RX0_IRQHandler>:
+080003cc <USB_LP_CAN1_RX0_IRQHandler>:
  * - Reads ID and data from FIFO.
  * - Calls processing function for received frame.
  *
  * @retval None
  */
 void USB_LP_CAN1_RX0_IRQHandler(void) {
- 80003c8:	b580      	push	{r7, lr}
- 80003ca:	b086      	sub	sp, #24
- 80003cc:	af00      	add	r7, sp, #0
-    if (CAN1->ESR & (CAN_ESR_EWGF | CAN_ESR_EPVF | CAN_ESR_BOFF)) { // Check CAN errors
- 80003ce:	4b38      	ldr	r3, [pc, #224]	@ (80004b0 <USB_LP_CAN1_RX0_IRQHandler+0xe8>)
- 80003d0:	699b      	ldr	r3, [r3, #24]
- 80003d2:	f003 0307 	and.w	r3, r3, #7
- 80003d6:	2b00      	cmp	r3, #0
- 80003d8:	d006      	beq.n	80003e8 <USB_LP_CAN1_RX0_IRQHandler+0x20>
-        CAN1->ESR &= ~(CAN_ESR_EWGF | CAN_ESR_EPVF | CAN_ESR_BOFF);  // Clear error flags
- 80003da:	4b35      	ldr	r3, [pc, #212]	@ (80004b0 <USB_LP_CAN1_RX0_IRQHandler+0xe8>)
- 80003dc:	699b      	ldr	r3, [r3, #24]
- 80003de:	4a34      	ldr	r2, [pc, #208]	@ (80004b0 <USB_LP_CAN1_RX0_IRQHandler+0xe8>)
- 80003e0:	f023 0307 	bic.w	r3, r3, #7
- 80003e4:	6193      	str	r3, [r2, #24]
+ 80003cc:	b580      	push	{r7, lr}
+ 80003ce:	b086      	sub	sp, #24
+ 80003d0:	af00      	add	r7, sp, #0
+	if (CAN1->ESR & ((1 << 0) | (1 << 1) | (1 << 2))) { // Check CAN errors
+ 80003d2:	4b37      	ldr	r3, [pc, #220]	@ (80004b0 <USB_LP_CAN1_RX0_IRQHandler+0xe4>)
+ 80003d4:	699b      	ldr	r3, [r3, #24]
+ 80003d6:	f003 0307 	and.w	r3, r3, #7
+ 80003da:	2b00      	cmp	r3, #0
+ 80003dc:	d006      	beq.n	80003ec <USB_LP_CAN1_RX0_IRQHandler+0x20>
+		CAN1->ESR &= ~((1 << 0) | (1 << 1) | (1 << 2));  // Clear error flags
+ 80003de:	4b34      	ldr	r3, [pc, #208]	@ (80004b0 <USB_LP_CAN1_RX0_IRQHandler+0xe4>)
+ 80003e0:	699b      	ldr	r3, [r3, #24]
+ 80003e2:	4a33      	ldr	r2, [pc, #204]	@ (80004b0 <USB_LP_CAN1_RX0_IRQHandler+0xe4>)
+ 80003e4:	f023 0307 	bic.w	r3, r3, #7
+ 80003e8:	6193      	str	r3, [r2, #24]
         return;                                                     // Exit if error present
- 80003e6:	e060      	b.n	80004aa <USB_LP_CAN1_RX0_IRQHandler+0xe2>
+ 80003ea:	e05d      	b.n	80004a8 <USB_LP_CAN1_RX0_IRQHandler+0xdc>
     }
 
-    if (!(CAN1->RF0R & CAN_RF0R_FMP0)) return;   // Exit if FIFO0 empty
- 80003e8:	4b31      	ldr	r3, [pc, #196]	@ (80004b0 <USB_LP_CAN1_RX0_IRQHandler+0xe8>)
- 80003ea:	68db      	ldr	r3, [r3, #12]
- 80003ec:	f003 0303 	and.w	r3, r3, #3
- 80003f0:	2b00      	cmp	r3, #0
- 80003f2:	d059      	beq.n	80004a8 <USB_LP_CAN1_RX0_IRQHandler+0xe0>
+	if (((CAN1->RF0R >> 0) & 0x03) == 0) return;   // Exit if FIFO0 empty
+ 80003ec:	4b30      	ldr	r3, [pc, #192]	@ (80004b0 <USB_LP_CAN1_RX0_IRQHandler+0xe4>)
+ 80003ee:	68db      	ldr	r3, [r3, #12]
+ 80003f0:	f003 0303 	and.w	r3, r3, #3
+ 80003f4:	2b00      	cmp	r3, #0
+ 80003f6:	d056      	beq.n	80004a6 <USB_LP_CAN1_RX0_IRQHandler+0xda>
 
     uint32_t id = 0;                              // Variable for CAN ID
- 80003f4:	2300      	movs	r3, #0
- 80003f6:	617b      	str	r3, [r7, #20]
-    uint8_t isExtended = (CAN1->sFIFOMailBox[0].RIR & CAN_RI0R_IDE) ? 1 : 0; // Check extended ID
- 80003f8:	4b2d      	ldr	r3, [pc, #180]	@ (80004b0 <USB_LP_CAN1_RX0_IRQHandler+0xe8>)
- 80003fa:	f8d3 31b0 	ldr.w	r3, [r3, #432]	@ 0x1b0
- 80003fe:	f003 0304 	and.w	r3, r3, #4
- 8000402:	2b00      	cmp	r3, #0
- 8000404:	bf14      	ite	ne
- 8000406:	2301      	movne	r3, #1
- 8000408:	2300      	moveq	r3, #0
- 800040a:	b2db      	uxtb	r3, r3
- 800040c:	74bb      	strb	r3, [r7, #18]
+ 80003f8:	2300      	movs	r3, #0
+ 80003fa:	617b      	str	r3, [r7, #20]
+    uint8_t isExtended = ((CAN1->sFIFOMailBox[0].RIR >> 2) & 0x01); // Check extended ID
+ 80003fc:	4b2c      	ldr	r3, [pc, #176]	@ (80004b0 <USB_LP_CAN1_RX0_IRQHandler+0xe4>)
+ 80003fe:	f8d3 31b0 	ldr.w	r3, [r3, #432]	@ 0x1b0
+ 8000402:	089b      	lsrs	r3, r3, #2
+ 8000404:	b2db      	uxtb	r3, r3
+ 8000406:	f003 0301 	and.w	r3, r3, #1
+ 800040a:	74bb      	strb	r3, [r7, #18]
     uint8_t len = CAN1->sFIFOMailBox[0].RDTR & 0x0F;  // Read data length (DLC)
- 800040e:	4b28      	ldr	r3, [pc, #160]	@ (80004b0 <USB_LP_CAN1_RX0_IRQHandler+0xe8>)
- 8000410:	f8d3 31b4 	ldr.w	r3, [r3, #436]	@ 0x1b4
- 8000414:	b2db      	uxtb	r3, r3
- 8000416:	f003 030f 	and.w	r3, r3, #15
- 800041a:	747b      	strb	r3, [r7, #17]
+ 800040c:	4b28      	ldr	r3, [pc, #160]	@ (80004b0 <USB_LP_CAN1_RX0_IRQHandler+0xe4>)
+ 800040e:	f8d3 31b4 	ldr.w	r3, [r3, #436]	@ 0x1b4
+ 8000412:	b2db      	uxtb	r3, r3
+ 8000414:	f003 030f 	and.w	r3, r3, #15
+ 8000418:	747b      	strb	r3, [r7, #17]
     uint8_t data[8];                              // Data array
 
     if (isExtended)                              // Extended frame
- 800041c:	7cbb      	ldrb	r3, [r7, #18]
- 800041e:	2b00      	cmp	r3, #0
- 8000420:	d005      	beq.n	800042e <USB_LP_CAN1_RX0_IRQHandler+0x66>
+ 800041a:	7cbb      	ldrb	r3, [r7, #18]
+ 800041c:	2b00      	cmp	r3, #0
+ 800041e:	d005      	beq.n	800042c <USB_LP_CAN1_RX0_IRQHandler+0x60>
         id = (CAN1->sFIFOMailBox[0].RIR >> 3); // Read 29-bit ID (shift right by 3)
- 8000422:	4b23      	ldr	r3, [pc, #140]	@ (80004b0 <USB_LP_CAN1_RX0_IRQHandler+0xe8>)
- 8000424:	f8d3 31b0 	ldr.w	r3, [r3, #432]	@ 0x1b0
- 8000428:	08db      	lsrs	r3, r3, #3
- 800042a:	617b      	str	r3, [r7, #20]
- 800042c:	e004      	b.n	8000438 <USB_LP_CAN1_RX0_IRQHandler+0x70>
+ 8000420:	4b23      	ldr	r3, [pc, #140]	@ (80004b0 <USB_LP_CAN1_RX0_IRQHandler+0xe4>)
+ 8000422:	f8d3 31b0 	ldr.w	r3, [r3, #432]	@ 0x1b0
+ 8000426:	08db      	lsrs	r3, r3, #3
+ 8000428:	617b      	str	r3, [r7, #20]
+ 800042a:	e004      	b.n	8000436 <USB_LP_CAN1_RX0_IRQHandler+0x6a>
     else
         id = (CAN1->sFIFOMailBox[0].RIR >> 21); // Read 11-bit ID (shift right by 21)
- 800042e:	4b20      	ldr	r3, [pc, #128]	@ (80004b0 <USB_LP_CAN1_RX0_IRQHandler+0xe8>)
- 8000430:	f8d3 31b0 	ldr.w	r3, [r3, #432]	@ 0x1b0
- 8000434:	0d5b      	lsrs	r3, r3, #21
- 8000436:	617b      	str	r3, [r7, #20]
+ 800042c:	4b20      	ldr	r3, [pc, #128]	@ (80004b0 <USB_LP_CAN1_RX0_IRQHandler+0xe4>)
+ 800042e:	f8d3 31b0 	ldr.w	r3, [r3, #432]	@ 0x1b0
+ 8000432:	0d5b      	lsrs	r3, r3, #21
+ 8000434:	617b      	str	r3, [r7, #20]
 
     uint32_t rdlr = CAN1->sFIFOMailBox[0].RDLR; // Read data low register (4 bytes)
- 8000438:	4b1d      	ldr	r3, [pc, #116]	@ (80004b0 <USB_LP_CAN1_RX0_IRQHandler+0xe8>)
- 800043a:	f8d3 31b8 	ldr.w	r3, [r3, #440]	@ 0x1b8
- 800043e:	60fb      	str	r3, [r7, #12]
+ 8000436:	4b1e      	ldr	r3, [pc, #120]	@ (80004b0 <USB_LP_CAN1_RX0_IRQHandler+0xe4>)
+ 8000438:	f8d3 31b8 	ldr.w	r3, [r3, #440]	@ 0x1b8
+ 800043c:	60fb      	str	r3, [r7, #12]
     uint32_t rdhr = CAN1->sFIFOMailBox[0].RDHR; // Read data high register (4 bytes)
- 8000440:	4b1b      	ldr	r3, [pc, #108]	@ (80004b0 <USB_LP_CAN1_RX0_IRQHandler+0xe8>)
- 8000442:	f8d3 31bc 	ldr.w	r3, [r3, #444]	@ 0x1bc
- 8000446:	60bb      	str	r3, [r7, #8]
+ 800043e:	4b1c      	ldr	r3, [pc, #112]	@ (80004b0 <USB_LP_CAN1_RX0_IRQHandler+0xe4>)
+ 8000440:	f8d3 31bc 	ldr.w	r3, [r3, #444]	@ 0x1bc
+ 8000444:	60bb      	str	r3, [r7, #8]
 
     for (uint8_t i = 0; i < len && i < 8; i++) { // Extract each data byte
- 8000448:	2300      	movs	r3, #0
- 800044a:	74fb      	strb	r3, [r7, #19]
- 800044c:	e018      	b.n	8000480 <USB_LP_CAN1_RX0_IRQHandler+0xb8>
+ 8000446:	2300      	movs	r3, #0
+ 8000448:	74fb      	strb	r3, [r7, #19]
+ 800044a:	e018      	b.n	800047e <USB_LP_CAN1_RX0_IRQHandler+0xb2>
         data[i] = (i < 4) ? (rdlr >> (8 * i)) & 0xFF : (rdhr >> (8 * (i - 4))) & 0xFF;
- 800044e:	7cfb      	ldrb	r3, [r7, #19]
- 8000450:	2b03      	cmp	r3, #3
- 8000452:	d806      	bhi.n	8000462 <USB_LP_CAN1_RX0_IRQHandler+0x9a>
- 8000454:	7cfb      	ldrb	r3, [r7, #19]
- 8000456:	00db      	lsls	r3, r3, #3
- 8000458:	68fa      	ldr	r2, [r7, #12]
- 800045a:	fa22 f303 	lsr.w	r3, r2, r3
- 800045e:	b2db      	uxtb	r3, r3
- 8000460:	e006      	b.n	8000470 <USB_LP_CAN1_RX0_IRQHandler+0xa8>
- 8000462:	7cfb      	ldrb	r3, [r7, #19]
- 8000464:	3b04      	subs	r3, #4
- 8000466:	00db      	lsls	r3, r3, #3
- 8000468:	68ba      	ldr	r2, [r7, #8]
- 800046a:	fa22 f303 	lsr.w	r3, r2, r3
- 800046e:	b2db      	uxtb	r3, r3
- 8000470:	7cfa      	ldrb	r2, [r7, #19]
- 8000472:	3218      	adds	r2, #24
- 8000474:	443a      	add	r2, r7
- 8000476:	f802 3c18 	strb.w	r3, [r2, #-24]
+ 800044c:	7cfb      	ldrb	r3, [r7, #19]
+ 800044e:	2b03      	cmp	r3, #3
+ 8000450:	d806      	bhi.n	8000460 <USB_LP_CAN1_RX0_IRQHandler+0x94>
+ 8000452:	7cfb      	ldrb	r3, [r7, #19]
+ 8000454:	00db      	lsls	r3, r3, #3
+ 8000456:	68fa      	ldr	r2, [r7, #12]
+ 8000458:	fa22 f303 	lsr.w	r3, r2, r3
+ 800045c:	b2db      	uxtb	r3, r3
+ 800045e:	e006      	b.n	800046e <USB_LP_CAN1_RX0_IRQHandler+0xa2>
+ 8000460:	7cfb      	ldrb	r3, [r7, #19]
+ 8000462:	3b04      	subs	r3, #4
+ 8000464:	00db      	lsls	r3, r3, #3
+ 8000466:	68ba      	ldr	r2, [r7, #8]
+ 8000468:	fa22 f303 	lsr.w	r3, r2, r3
+ 800046c:	b2db      	uxtb	r3, r3
+ 800046e:	7cfa      	ldrb	r2, [r7, #19]
+ 8000470:	3218      	adds	r2, #24
+ 8000472:	443a      	add	r2, r7
+ 8000474:	f802 3c18 	strb.w	r3, [r2, #-24]
     for (uint8_t i = 0; i < len && i < 8; i++) { // Extract each data byte
- 800047a:	7cfb      	ldrb	r3, [r7, #19]
- 800047c:	3301      	adds	r3, #1
- 800047e:	74fb      	strb	r3, [r7, #19]
- 8000480:	7cfa      	ldrb	r2, [r7, #19]
- 8000482:	7c7b      	ldrb	r3, [r7, #17]
- 8000484:	429a      	cmp	r2, r3
- 8000486:	d202      	bcs.n	800048e <USB_LP_CAN1_RX0_IRQHandler+0xc6>
- 8000488:	7cfb      	ldrb	r3, [r7, #19]
- 800048a:	2b07      	cmp	r3, #7
- 800048c:	d9df      	bls.n	800044e <USB_LP_CAN1_RX0_IRQHandler+0x86>
+ 8000478:	7cfb      	ldrb	r3, [r7, #19]
+ 800047a:	3301      	adds	r3, #1
+ 800047c:	74fb      	strb	r3, [r7, #19]
+ 800047e:	7cfa      	ldrb	r2, [r7, #19]
+ 8000480:	7c7b      	ldrb	r3, [r7, #17]
+ 8000482:	429a      	cmp	r2, r3
+ 8000484:	d202      	bcs.n	800048c <USB_LP_CAN1_RX0_IRQHandler+0xc0>
+ 8000486:	7cfb      	ldrb	r3, [r7, #19]
+ 8000488:	2b07      	cmp	r3, #7
+ 800048a:	d9df      	bls.n	800044c <USB_LP_CAN1_RX0_IRQHandler+0x80>
     }
 
-    CAN1->RF0R |= CAN_RF0R_RFOM0;                // Release FIFO0 (remove read message)
- 800048e:	4b08      	ldr	r3, [pc, #32]	@ (80004b0 <USB_LP_CAN1_RX0_IRQHandler+0xe8>)
- 8000490:	68db      	ldr	r3, [r3, #12]
- 8000492:	4a07      	ldr	r2, [pc, #28]	@ (80004b0 <USB_LP_CAN1_RX0_IRQHandler+0xe8>)
- 8000494:	f043 0320 	orr.w	r3, r3, #32
- 8000498:	60d3      	str	r3, [r2, #12]
+    CAN1->RF0R |= (1 << 5);                // Release FIFO0 (remove read message)
+ 800048c:	4b08      	ldr	r3, [pc, #32]	@ (80004b0 <USB_LP_CAN1_RX0_IRQHandler+0xe4>)
+ 800048e:	68db      	ldr	r3, [r3, #12]
+ 8000490:	4a07      	ldr	r2, [pc, #28]	@ (80004b0 <USB_LP_CAN1_RX0_IRQHandler+0xe4>)
+ 8000492:	f043 0320 	orr.w	r3, r3, #32
+ 8000496:	60d3      	str	r3, [r2, #12]
 
     Process_CAN_Frame(id, isExtended, data, len); // Call function to process received CAN frame
- 800049a:	7c7b      	ldrb	r3, [r7, #17]
- 800049c:	463a      	mov	r2, r7
- 800049e:	7cb9      	ldrb	r1, [r7, #18]
- 80004a0:	6978      	ldr	r0, [r7, #20]
- 80004a2:	f000 f807 	bl	80004b4 <Process_CAN_Frame>
- 80004a6:	e000      	b.n	80004aa <USB_LP_CAN1_RX0_IRQHandler+0xe2>
-    if (!(CAN1->RF0R & CAN_RF0R_FMP0)) return;   // Exit if FIFO0 empty
- 80004a8:	bf00      	nop
+ 8000498:	7c7b      	ldrb	r3, [r7, #17]
+ 800049a:	463a      	mov	r2, r7
+ 800049c:	7cb9      	ldrb	r1, [r7, #18]
+ 800049e:	6978      	ldr	r0, [r7, #20]
+ 80004a0:	f000 f808 	bl	80004b4 <Process_CAN_Frame>
+ 80004a4:	e000      	b.n	80004a8 <USB_LP_CAN1_RX0_IRQHandler+0xdc>
+	if (((CAN1->RF0R >> 0) & 0x03) == 0) return;   // Exit if FIFO0 empty
+ 80004a6:	bf00      	nop
 }
- 80004aa:	3718      	adds	r7, #24
- 80004ac:	46bd      	mov	sp, r7
- 80004ae:	bd80      	pop	{r7, pc}
+ 80004a8:	3718      	adds	r7, #24
+ 80004aa:	46bd      	mov	sp, r7
+ 80004ac:	bd80      	pop	{r7, pc}
+ 80004ae:	bf00      	nop
  80004b0:	40006400 	.word	0x40006400
 
 080004b4 <Process_CAN_Frame>:
@@ -688,7 +691,7 @@ void GPIO_Config(void) {
  8000558:	b480      	push	{r7}
  800055a:	af00      	add	r7, sp, #0
     // Enable clocks for GPIOA, GPIOC (optional), and AFIO
-    RCC->APB2ENR |= RCC_APB2ENR_IOPAEN | RCC_APB2ENR_IOPCEN | RCC_APB2ENR_AFIOEN;
+	RCC->APB2ENR |= (1 << 2) | (1 << 4) | (1 << 0);
  800055c:	4b10      	ldr	r3, [pc, #64]	@ (80005a0 <GPIO_Config+0x48>)
  800055e:	699b      	ldr	r3, [r3, #24]
  8000560:	4a0f      	ldr	r2, [pc, #60]	@ (80005a0 <GPIO_Config+0x48>)
@@ -697,14 +700,14 @@ void GPIO_Config(void) {
 
     // Configure PA11 (CAN_RX) as input floating
     // Clear CNF11[1:0] and MODE11[1:0] bits
-    GPIOA->CRH &= ~(GPIO_CRH_CNF11 | GPIO_CRH_MODE11);
+	GPIOA->CRH &= ~((0b1111) << 12);
  8000568:	4b0e      	ldr	r3, [pc, #56]	@ (80005a4 <GPIO_Config+0x4c>)
  800056a:	685b      	ldr	r3, [r3, #4]
  800056c:	4a0d      	ldr	r2, [pc, #52]	@ (80005a4 <GPIO_Config+0x4c>)
  800056e:	f423 4370 	bic.w	r3, r3, #61440	@ 0xf000
  8000572:	6053      	str	r3, [r2, #4]
     // Set CNF11 to input floating (01), MODE11 to input (00)
-    GPIOA->CRH |= GPIO_CRH_CNF11_0;
+	GPIOA->CRH |= (0b01 << 14);
  8000574:	4b0b      	ldr	r3, [pc, #44]	@ (80005a4 <GPIO_Config+0x4c>)
  8000576:	685b      	ldr	r3, [r3, #4]
  8000578:	4a0a      	ldr	r2, [pc, #40]	@ (80005a4 <GPIO_Config+0x4c>)
@@ -713,7 +716,7 @@ void GPIO_Config(void) {
 
     // Configure PA12 (CAN_TX) as alternate function push-pull output
     // Clear CNF12[1:0] and MODE12[1:0] bits
-    GPIOA->CRH &= ~(GPIO_CRH_CNF12 | GPIO_CRH_MODE12);
+	GPIOA->CRH &= ~((0b1111) << 16);
  8000580:	4b08      	ldr	r3, [pc, #32]	@ (80005a4 <GPIO_Config+0x4c>)
  8000582:	685b      	ldr	r3, [r3, #4]
  8000584:	4a07      	ldr	r2, [pc, #28]	@ (80005a4 <GPIO_Config+0x4c>)
@@ -721,7 +724,7 @@ void GPIO_Config(void) {
  800058a:	6053      	str	r3, [r2, #4]
     // Set MODE12 to output mode, max speed 2 MHz (10)
     // Set CNF12 to alternate function push-pull (10)
-    GPIOA->CRH |= GPIO_CRH_MODE12_1 | GPIO_CRH_CNF12_1;
+	GPIOA->CRH |= (0b10 << 16) | (0b10 << 18);
  800058c:	4b05      	ldr	r3, [pc, #20]	@ (80005a4 <GPIO_Config+0x4c>)
  800058e:	685b      	ldr	r3, [r3, #4]
  8000590:	4a04      	ldr	r2, [pc, #16]	@ (80005a4 <GPIO_Config+0x4c>)
@@ -904,7 +907,7 @@ void Timer2_Config(void)
 {
  8000694:	b580      	push	{r7, lr}
  8000696:	af00      	add	r7, sp, #0
-    RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;   /* Enable TIM2 clock                */
+	RCC->APB1ENR |= (1 << 0);             /* Enable TIM2 clock                */
  8000698:	4b0e      	ldr	r3, [pc, #56]	@ (80006d4 <Timer2_Config+0x40>)
  800069a:	69db      	ldr	r3, [r3, #28]
  800069c:	4a0d      	ldr	r2, [pc, #52]	@ (80006d4 <Timer2_Config+0x40>)
@@ -918,7 +921,7 @@ void Timer2_Config(void)
  80006ae:	f04f 4380 	mov.w	r3, #1073741824	@ 0x40000000
  80006b2:	f44f 727a 	mov.w	r2, #1000	@ 0x3e8
  80006b6:	62da      	str	r2, [r3, #44]	@ 0x2c
-    TIM2->DIER |= TIM_DIER_UIE;           /* Enable update interrupt          */
+    TIM2->DIER |= (1 << 0);               /* Enable update interrupt          */
  80006b8:	f04f 4380 	mov.w	r3, #1073741824	@ 0x40000000
  80006bc:	68db      	ldr	r3, [r3, #12]
  80006be:	f04f 4280 	mov.w	r2, #1073741824	@ 0x40000000
@@ -942,19 +945,19 @@ void Timer_Stop(void)
 {
  80006d8:	b480      	push	{r7}
  80006da:	af00      	add	r7, sp, #0
-    TIM2->CR1 &= ~TIM_CR1_CEN;   /* Stop counter                   */
+	TIM2->CR1  &= ~(1 << 0);     /* Stop counter                   */
  80006dc:	f04f 4380 	mov.w	r3, #1073741824	@ 0x40000000
  80006e0:	681b      	ldr	r3, [r3, #0]
  80006e2:	f04f 4280 	mov.w	r2, #1073741824	@ 0x40000000
  80006e6:	f023 0301 	bic.w	r3, r3, #1
  80006ea:	6013      	str	r3, [r2, #0]
-    TIM2->DIER &= ~TIM_DIER_UIE; /* Disable update interrupt       */
+	TIM2->DIER &= ~(1 << 0);     /* Disable update interrupt       */
  80006ec:	f04f 4380 	mov.w	r3, #1073741824	@ 0x40000000
  80006f0:	68db      	ldr	r3, [r3, #12]
  80006f2:	f04f 4280 	mov.w	r2, #1073741824	@ 0x40000000
  80006f6:	f023 0301 	bic.w	r3, r3, #1
  80006fa:	60d3      	str	r3, [r2, #12]
-    TIM2->SR  &= ~TIM_SR_UIF;    /* Clear update flag              */
+	TIM2->SR   &= ~(1 << 0);    /* Clear update flag              */
  80006fc:	f04f 4380 	mov.w	r3, #1073741824	@ 0x40000000
  8000700:	691b      	ldr	r3, [r3, #16]
  8000702:	f04f 4280 	mov.w	r2, #1073741824	@ 0x40000000
@@ -1049,19 +1052,19 @@ void Timer_Setup_Repeat(uint8_t mode,
  8000786:	f04f 4380 	mov.w	r3, #1073741824	@ 0x40000000
  800078a:	2200      	movs	r2, #0
  800078c:	625a      	str	r2, [r3, #36]	@ 0x24
-    TIM2->SR  &= ~TIM_SR_UIF;      /* Clear pending update flag          */
+    TIM2->SR  &= ~(1 << 0);        /* Clear pending update flag          */
  800078e:	f04f 4380 	mov.w	r3, #1073741824	@ 0x40000000
  8000792:	691b      	ldr	r3, [r3, #16]
  8000794:	f04f 4280 	mov.w	r2, #1073741824	@ 0x40000000
  8000798:	f023 0301 	bic.w	r3, r3, #1
  800079c:	6113      	str	r3, [r2, #16]
-    TIM2->DIER |= TIM_DIER_UIE;    /* Enable update interrupt            */
+    TIM2->DIER |= (1 << 0);        /* Enable update interrupt            */
  800079e:	f04f 4380 	mov.w	r3, #1073741824	@ 0x40000000
  80007a2:	68db      	ldr	r3, [r3, #12]
  80007a4:	f04f 4280 	mov.w	r2, #1073741824	@ 0x40000000
  80007a8:	f043 0301 	orr.w	r3, r3, #1
  80007ac:	60d3      	str	r3, [r2, #12]
-    TIM2->CR1  |= TIM_CR1_CEN;     /* Start timer                        */
+    TIM2->CR1  |= (1 << 0);        /* Start timer                        */
  80007ae:	f04f 4380 	mov.w	r3, #1073741824	@ 0x40000000
  80007b2:	681b      	ldr	r3, [r3, #0]
  80007b4:	f04f 4280 	mov.w	r2, #1073741824	@ 0x40000000
@@ -1085,7 +1088,7 @@ void TIM2_IRQHandler(void)
  80007cc:	b580      	push	{r7, lr}
  80007ce:	b086      	sub	sp, #24
  80007d0:	af00      	add	r7, sp, #0
-    if (!(TIM2->SR & TIM_SR_UIF))
+	if (!(TIM2->SR & (1 << 0)))
  80007d2:	f04f 4380 	mov.w	r3, #1073741824	@ 0x40000000
  80007d6:	691b      	ldr	r3, [r3, #16]
  80007d8:	f003 0301 	and.w	r3, r3, #1
@@ -1093,7 +1096,7 @@ void TIM2_IRQHandler(void)
  80007de:	d04f      	beq.n	8000880 <TIM2_IRQHandler+0xb4>
         return;                       /* Spurious interrupt, ignore       */
 
-    TIM2->SR &= ~TIM_SR_UIF;          /* Clear update flag                */
+	TIM2->SR &= ~(1 << 0);          /* Clear update flag                */
  80007e0:	f04f 4380 	mov.w	r3, #1073741824	@ 0x40000000
  80007e4:	691b      	ldr	r3, [r3, #16]
  80007e6:	f04f 4280 	mov.w	r2, #1073741824	@ 0x40000000
@@ -1188,7 +1191,7 @@ void TIM2_IRQHandler(void)
  8000874:	1d3a      	adds	r2, r7, #4
  8000876:	7db8      	ldrb	r0, [r7, #22]
  8000878:	6939      	ldr	r1, [r7, #16]
- 800087a:	f7ff fd0b 	bl	8000294 <CAN_Send>
+ 800087a:	f7ff fd09 	bl	8000290 <CAN_Send>
  800087e:	e002      	b.n	8000886 <TIM2_IRQHandler+0xba>
         return;                       /* Spurious interrupt, ignore       */
  8000880:	bf00      	nop
@@ -1239,7 +1242,7 @@ void TIM2_IRQHandler(void)
 void UART_Config(void) {
  80008cc:	b580      	push	{r7, lr}
  80008ce:	af00      	add	r7, sp, #0
-    RCC->APB2ENR |= RCC_APB2ENR_IOPAEN | RCC_APB2ENR_USART1EN;
+	RCC->APB2ENR |= (1 << 2)|(1 << 14);
  80008d0:	4b17      	ldr	r3, [pc, #92]	@ (8000930 <UART_Config+0x64>)
  80008d2:	699b      	ldr	r3, [r3, #24]
  80008d4:	4a16      	ldr	r2, [pc, #88]	@ (8000930 <UART_Config+0x64>)
@@ -1249,27 +1252,27 @@ void UART_Config(void) {
     // Enable clock for GPIOA port and USART1 peripheral
 
     // Configure PA9 as TX (Alternate Function Push-Pull, max speed 2 MHz)
-    GPIOA->CRH &= ~(GPIO_CRH_CNF9 | GPIO_CRH_MODE9); // Clear previous config bits for PA9
+	GPIOA->CRH &= ~((0xF) << 4); // Clear previous config bits for PA9
  80008e0:	4b14      	ldr	r3, [pc, #80]	@ (8000934 <UART_Config+0x68>)
  80008e2:	685b      	ldr	r3, [r3, #4]
  80008e4:	4a13      	ldr	r2, [pc, #76]	@ (8000934 <UART_Config+0x68>)
  80008e6:	f023 03f0 	bic.w	r3, r3, #240	@ 0xf0
  80008ea:	6053      	str	r3, [r2, #4]
-    GPIOA->CRH |= GPIO_CRH_MODE9_1 | GPIO_CRH_CNF9_1; // MODE9=10 (2 MHz output), CNF9=10 (AF Push-Pull)
+	GPIOA->CRH |= ((0x2 << 2) | (0x2)); // MODE9=10 (2 MHz output), CNF9=10 (AF Push-Pull)
  80008ec:	4b11      	ldr	r3, [pc, #68]	@ (8000934 <UART_Config+0x68>)
  80008ee:	685b      	ldr	r3, [r3, #4]
  80008f0:	4a10      	ldr	r2, [pc, #64]	@ (8000934 <UART_Config+0x68>)
- 80008f2:	f043 03a0 	orr.w	r3, r3, #160	@ 0xa0
+ 80008f2:	f043 030a 	orr.w	r3, r3, #10
  80008f6:	6053      	str	r3, [r2, #4]
 
     // Configure PA10 as RX (Input floating)
-    GPIOA->CRH &= ~(GPIO_CRH_CNF10 | GPIO_CRH_MODE10); // Clear previous config bits for PA10
+	GPIOA->CRH &= ~((0xF) << 8); // Clear previous config bits for PA10
  80008f8:	4b0e      	ldr	r3, [pc, #56]	@ (8000934 <UART_Config+0x68>)
  80008fa:	685b      	ldr	r3, [r3, #4]
  80008fc:	4a0d      	ldr	r2, [pc, #52]	@ (8000934 <UART_Config+0x68>)
  80008fe:	f423 6370 	bic.w	r3, r3, #3840	@ 0xf00
  8000902:	6053      	str	r3, [r2, #4]
-    GPIOA->CRH |= GPIO_CRH_CNF10_0;                    // CNF10=01 (Floating input), MODE10=00 (Input mode)
+	GPIOA->CRH |= (0x1 << 10);                    // CNF10=01 (Floating input), MODE10=00 (Input mode)
  8000904:	4b0b      	ldr	r3, [pc, #44]	@ (8000934 <UART_Config+0x68>)
  8000906:	685b      	ldr	r3, [r3, #4]
  8000908:	4a0a      	ldr	r2, [pc, #40]	@ (8000934 <UART_Config+0x68>)
@@ -1280,7 +1283,7 @@ void UART_Config(void) {
  8000910:	4b09      	ldr	r3, [pc, #36]	@ (8000938 <UART_Config+0x6c>)
  8000912:	2245      	movs	r2, #69	@ 0x45
  8000914:	609a      	str	r2, [r3, #8]
-    USART1->CR1 |= USART_CR1_RE | USART_CR1_TE | USART_CR1_UE | USART_CR1_RXNEIE;
+    USART1->CR1 |= (1 << 13)|(1 << 2)|(1 << 3)|(1 << 5);
  8000916:	4b08      	ldr	r3, [pc, #32]	@ (8000938 <UART_Config+0x6c>)
  8000918:	68db      	ldr	r3, [r3, #12]
  800091a:	4a07      	ldr	r2, [pc, #28]	@ (8000938 <UART_Config+0x6c>)
@@ -1336,7 +1339,7 @@ void UART_SendByte(uint8_t b) {
  8000960:	af00      	add	r7, sp, #0
  8000962:	4603      	mov	r3, r0
  8000964:	71fb      	strb	r3, [r7, #7]
-    while (!(USART1->SR & USART_SR_TXE));  // Wait until TX register is empty (ready to transmit)
+	while (!(USART1->SR & (1 << 7)));  // Wait until TX register is empty (ready to transmit)
  8000966:	bf00      	nop
  8000968:	4b06      	ldr	r3, [pc, #24]	@ (8000984 <UART_SendByte+0x28>)
  800096a:	681b      	ldr	r3, [r3, #0]
@@ -1365,7 +1368,7 @@ void USART1_IRQHandler(void) {
  8000988:	b480      	push	{r7}
  800098a:	b083      	sub	sp, #12
  800098c:	af00      	add	r7, sp, #0
-    if (USART1->SR & USART_SR_RXNE) {          // Check if RX data register not empty (byte received)
+	if (USART1->SR & (1 << 5)) {          // Check if RX data register not empty (byte received)
  800098e:	4b33      	ldr	r3, [pc, #204]	@ (8000a5c <USART1_IRQHandler+0xd4>)
  8000990:	681b      	ldr	r3, [r3, #0]
  8000992:	f003 0320 	and.w	r3, r3, #32
@@ -1651,7 +1654,7 @@ void Process_UART_Frame(void) {
  8000b3e:	78f8      	ldrb	r0, [r7, #3]
  8000b40:	687a      	ldr	r2, [r7, #4]
  8000b42:	68f9      	ldr	r1, [r7, #12]
- 8000b44:	f7ff fba6 	bl	8000294 <CAN_Send>
+ 8000b44:	f7ff fba4 	bl	8000290 <CAN_Send>
  8000b48:	e00b      	b.n	8000b62 <Process_UART_Frame+0xf6>
     } else {
         repeat = 1;               // Set repeat flag to enable repeated sending

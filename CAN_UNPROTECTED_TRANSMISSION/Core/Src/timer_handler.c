@@ -30,10 +30,10 @@ volatile uint8_t current_frame[REPEAT_FRAME_SIZE];
  *****************************************************************************/
 void Timer2_Config(void)
 {
-    RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;   /* Enable TIM2 clock                */
+	RCC->APB1ENR |= (1 << 0);             /* Enable TIM2 clock                */
     TIM2->PSC  = 1000 - 1;                /* Set prescaler for 1 ms tick      */
     TIM2->ARR  = 1000;                    /* Set auto-reload for 1 second     */
-    TIM2->DIER |= TIM_DIER_UIE;           /* Enable update interrupt          */
+    TIM2->DIER |= (1 << 0);               /* Enable update interrupt          */
     NVIC_EnableIRQ(TIM2_IRQn);            /* Enable TIM2 IRQ in NVIC          */
 }
 
@@ -47,9 +47,9 @@ void Timer2_Config(void)
  *****************************************************************************/
 void Timer_Stop(void)
 {
-    TIM2->CR1 &= ~TIM_CR1_CEN;   /* Stop counter                   */
-    TIM2->DIER &= ~TIM_DIER_UIE; /* Disable update interrupt       */
-    TIM2->SR  &= ~TIM_SR_UIF;    /* Clear update flag              */
+	TIM2->CR1  &= ~(1 << 0);     /* Stop counter                   */
+	TIM2->DIER &= ~(1 << 0);     /* Disable update interrupt       */
+	TIM2->SR   &= ~(1 << 0);    /* Clear update flag              */
 }
 
 /*****************************************************************************
@@ -89,9 +89,9 @@ void Timer_Setup_Repeat(uint8_t mode,
     /* Configure timer period (tick = 1 ms ⇒ ARR = interval) */
     TIM2->ARR = interval;          /* Set auto-reload value to interval  */
     TIM2->CNT = 0;                 /* Reset counter                      */
-    TIM2->SR  &= ~TIM_SR_UIF;      /* Clear pending update flag          */
-    TIM2->DIER |= TIM_DIER_UIE;    /* Enable update interrupt            */
-    TIM2->CR1  |= TIM_CR1_CEN;     /* Start timer                        */
+    TIM2->SR  &= ~(1 << 0);        /* Clear pending update flag          */
+    TIM2->DIER |= (1 << 0);        /* Enable update interrupt            */
+    TIM2->CR1  |= (1 << 0);        /* Start timer                        */
 }
 
 /*****************************************************************************
@@ -104,10 +104,10 @@ void Timer_Setup_Repeat(uint8_t mode,
  *****************************************************************************/
 void TIM2_IRQHandler(void)
 {
-    if (!(TIM2->SR & TIM_SR_UIF))
+	if (!(TIM2->SR & (1 << 0)))
         return;                       /* Spurious interrupt, ignore       */
 
-    TIM2->SR &= ~TIM_SR_UIF;          /* Clear update flag                */
+	TIM2->SR &= ~(1 << 0);          /* Clear update flag                */
     if (!repeat)
         return;                       /* Repeat mode not enabled, skip    */
 
